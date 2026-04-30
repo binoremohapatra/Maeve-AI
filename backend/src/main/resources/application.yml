@@ -1,0 +1,89 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: maeve-platform
+  cache:
+    type: simple
+
+  # 👇 ADDED: Increase Upload Limit to 50MB
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+# Firebase Configuration
+firebase:
+  config-path: ${FIREBASE_CONFIG_PATH:./serviceAccountKey.json}
+  database-url: ${FIREBASE_DATABASE_URL:https://maeve-ai-core-default-rtdb.firebaseio.com}
+
+# LLM Provider Configuration
+llm:
+  # Local Ollama Configuration
+  ollama:
+    enabled: true
+    host: ${OLLAMA_HOST:localhost}
+    port: ${OLLAMA_PORT:11434}
+    models:
+      - llama3:8b
+      - llama3:7b
+    timeout: 2s
+    max-retries: 1
+
+  # Cloud Provider Configuration
+  groq:
+    enabled: true
+    api-keys: ${GROQ_API_KEYS:}
+    base-url: https://api.groq.com/openai/v1
+    models:
+      - llama-3.1-8b-instant
+      - mixtral-8x7b-32768
+    timeout: 30s
+    max-retries: 3
+
+  gemini:
+    enabled: true
+    api-keys: ${GEMINI_API_KEYS:}
+    base-url: https://generativelanguage.googleapis.com/v1beta
+    models:
+      - gemini-1.5-flash
+      - gemini-1.5-pro
+    timeout: 30s
+    max-retries: 3
+
+  # Request Configuration
+  request:
+    timeout: 30s
+    max-retries: 3
+
+# Logging Configuration
+logging:
+  level:
+    com.maeve: INFO
+    org.springframework.web: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Spotify Configuration
+spotify:
+  client:
+    id: e1e782bf4bbc4aa48c46e51dcd1ca20c
+    secret: 167f83fd334e48aeb9cba0b0f6bd0ae5
+    redirect-uri: http://127.0.0.1:3001/callback
+
+# Last.fm Configuration
+lastfm:
+  api:
+    key: 8250cb3da82ea17c96dd7f80d3a445ca
+    secret: 6916b0db7f0b84c2e7839669869d14f2
+
+# Management Endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

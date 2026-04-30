@@ -1,0 +1,54 @@
+# Python Virtual Environment
+backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Node.js / React
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Environment variables (API Keys)
+.env
+.env.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Test results
+*.json
+test_results/
+comprehensive_test_results.json
+anti_bot_test_results.json
+minor_fixes_test_results.json
+
+# Temporary files
+*.tmp
+*.temp
+run_tests.ps1
+test_*.py
+
+# Large files (GitHub limit 100MB)
+*.onnx
+*.exe
+*.bin
+*.pt
+*.wav
+*.mp3
+
+# Build directories
+build/
+dist/
+target/
+backend/target/

@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # Main Application
+  maeve-main:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - LOG_LEVEL=INFO
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+    volumes:
+      - ./chat_history.json:/app/data
+      - ./user_profile.json:/app/data
+      - ./sfx:/app/sfx
+      - ./kokoro-v1.0.int8.onnx:/app/models
+      - ./voices-v1.0.bin:/app/models
+    restart: unless-stopped
+    depends_on:
+      - ollama
+
+  # Speech-to-Text Service
+  maeve-stt:
+    build: .
+    ports:
+      - "5002:5002"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    restart: unless-stopped
+
+  # PC Agent Service
+  maeve-pc-agent:
+    build: .
+    ports:
+      - "5001:5001"
+    environment:
+      - SYSTEM_PIN=${SYSTEM_PIN}
+    restart: unless-stopped
+
+  # Vision Service
+  maeve-vision:
+    build: .
+    ports:
+      - "5003:5003"
+    volumes:
+      - ./models:/app/models
+    restart: unless-stopped
+
+  # Ollama Service (External)
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./models:/root/.ollama
+    restart: unless-stopped
+
+networks:
+  maeve-network:
+    driver: bridge
+
+volumes:
+  chat_data:
+  models:
+  sfx_data:

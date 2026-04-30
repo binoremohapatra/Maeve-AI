@@ -1,0 +1,4 @@
+Edge Case Testing Summary
+Personas Tested: 37
+Approximate Scenarios: 296
+Detailed results in console output
