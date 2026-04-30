@@ -47,6 +47,9 @@ test_*.py
 *.wav
 *.mp3
 
+# SFX files (sound effects)
+backend/sfx/
+
 # Build directories
 build/
 dist/
