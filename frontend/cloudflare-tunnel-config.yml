@@ -1,0 +1,22 @@
+# 🌍 Cloudflare Tunnel Configuration for Global Maeve Access
+# Use this when you want to control your PC from outside your home network
+
+tunnel: maeve-global-tunnel
+credentials-file: /path/to/your/credentials.json
+
+ingress:
+  # Brain (Port 5000) - Chat & Commands
+  - hostname: maeve-brain.trycloudflare.com
+    service: http://localhost:5000
+  # Eyes (Port 5006) - Vision WebSocket  
+  - hostname: maeve-vision.trycloudflare.com
+    service: http://localhost:5006
+  # Hands (Port 5001) - PC Control
+  - hostname: maeve-control.trycloudflare.com
+    service: http://localhost:5001
+  # Ears (Port 5002) - Audio WebSocket
+  - hostname: maeve-audio.trycloudflare.com
+    service: http://localhost:5002
+  
+  # Fallback for local development
+  - service: http_status:404

@@ -1,0 +1,24 @@
+﻿src/components/BedroomStage.tsx(2,28): error TS6133: 'useTexture' is declared but its value is never read.
+src/components/ExpandableChatInput.tsx(16,39): error TS6133: 'audioComponent' is declared but its value is never read.
+src/components/MascotCareScreen.tsx(12,41): error TS6133: 'mascot' is declared but its value is never read.
+src/components/MascotDeviceScreen.tsx(14,18): error TS6133: 'height' is declared but its value is never read.
+src/components/MascotDeviceScreen.tsx(25,9): error TS6133: 'isSmall' is declared but its value is never read.
+src/components/overlays/AngryOverlay.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/overlays/ArgueOverlay.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/overlays/SadOverlay.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/SpotifyCallback.tsx(4,10): error TS2305: Module '"../utils/spotify"' has no exported member 'getCodeFromUrl'.
+src/components/VRMScene.tsx(2,39): error TS6133: 'useThree' is declared but its value is never read.
+src/components/VRMScene.tsx(15,1): error TS6133: 'ArgueOverlay' is declared but its value is never read.
+src/components/VRMScene.tsx(19,29): error TS7016: Could not find a declaration file for module './MaeveAvatar'. 'D:/mavepai/src/components/MaeveAvatar.jsx' implicitly has an 'any' type.
+src/components/WakeWordOverlay.tsx(13,38): error TS2339: Property 'SpeechRecognition' does not exist on type 'Window & typeof globalThis'.
+src/controllers/HumanAnimationController.ts(166,13): error TS6133: 'sequenceTimer' is declared but its value is never read.
+src/controllers/HumanAnimationController.ts(178,13): error TS6133: 'expressionTimer' is declared but its value is never read.
+src/controllers/HumanAnimationController.ts(180,13): error TS6133: 'currentBreathAmp' is declared but its value is never read.
+src/controllers/HumanAnimationController.ts(897,25): error TS6133: 'delta' is declared but its value is never read.
+src/controllers/LipSyncSystem.ts(1,1): error TS6133: 'THREE' is declared but its value is never read.
+src/controllers/LipSyncSystem.ts(64,40): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+      Types of property '[Symbol.toStringTag]' are incompatible.
+        Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/stores/moodStore.ts(799,25): error TS6133: 'setMascotResponse' is declared but its value is never read.
