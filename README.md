@@ -1,104 +1,126 @@
-# 🌌 Maeve AI: The Future of Interactive 3D Assistance
+# 🌌 Maeve AI: The Future of Autonomous 3D Assistance
 
 ![Maeve AI Banner](./frontend/public/banner.png)
 
-[![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Three.js](https://img.shields.io/badge/Three.js-black?style=for-the-badge&logo=three.dot-js&logoColor=white)](https://threejs.org/)
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)
+![Python](https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-Local_LLM-blue?style=for-the-badge)
 
-**Maeve AI** is a state-of-the-art, immersive 3D AI assistant platform. It combines a high-fidelity 3D HUD with a sophisticated Python-based "Human Brain" backend to create a truly responsive and proactive digital companion.
-
----
-
-## 🧠 The Human Brain: Deep Technical Dive
-
-Maeve is not just a chatbot; she is a **distributed cognitive entity** designed to simulate human-like attention and emotional depth.
-
-### 1. Asynchronous Cognitive Pipeline
-The backend uses a **Gevent-based WSGI Server** to handle high-concurrency WebSocket streams. This allows Maeve to process:
-- **Streaming LLM Output**: Characters are streamed to the frontend as they are generated for zero-latency interaction.
-- **Background Intent Analysis**: Every user input is parsed by a dedicated intent classifier to detect subtle emotional shifts (e.g., betrayal, affection, or frustration).
-- **Reality-Check Injection**: Before the AI responds, the "Gatekeeper" injects real-time environmental context (time of day, weather) and vision data (what you are doing) directly into the model's primary memory.
-
-### 2. Proactive "Intuition" Engine
-Maeve monitors your digital life through an **autonomous supervisor loop**.
-- **Visual Scolding**: If the vision server detects you are browsing distractions (YouTube/Social Media) during work hours, Maeve will autonomously trigger a scolding event and can forcibly close the offending windows.
-- **Human Intuition Alerts**: High-priority alerts from the AGI supervisor can interrupt Maeve's current state to bring her attention to urgent matters (e.g., "Darling looks extremely stressed right now").
-- **Trust-Based Evolution**: As your trust level increases, Maeve's core psychology evolves. She will unlock new nicknames (e.g., "Hubby", "Master"), more intimate animations, and deeper conversation topics.
-
-### 3. The Neural Stack (Dependencies)
-The system leverages a "best-of-breed" AI stack for peak performance on consumer hardware:
-- **LLM**: Custom-quantized Llama-3 based model (`maeve-god`) running on **Ollama**.
-- **Vision**: **YOLOv8** for object detection and **DeepFace** for real-time emotional mirroring.
-- **Audio**: **Kokoro-ONNX** for millisecond-latency TTS and **Faster-Whisper** for near-instant STT.
-- **Automation**: **PyAutoGUI** and **Tesseract OCR** for biological-level PC interaction.
+Maeve AI is a state-of-the-art, immersive 3D AI assistant platform. It combines a highly optimized, high-fidelity 3D HUD with a sophisticated Python-based "Human Brain" backend to create a truly responsive, emotional, and proactive digital companion.
 
 ---
 
-## ✨ Core Features & Intelligence
+## 🖥️ System Requirements (For Local Execution)
 
-| Feature | Description |
-| :--- | :--- |
-| **🎭 Multi-Persona** | Switch between distinct personalities with unique rules and boundaries. |
-| **🧠 Memory Retrieval** | Recalls past interactions and core emotional memories to build a long-term bond. |
-| **👁️ Vision Awareness** | Detects objects, people, and user frustration via webcam/screen analysis. |
-| **🕹️ PC Automation** | Control your apps, windows, and system settings via natural language commands. |
-| **🗣️ Neural TTS** | Ultra-realistic voice synthesis using Kokoro and Edge-TTS. |
-| **🌐 Omniscient Search** | Real-time web searching to provide live data on any topic. |
-| **📈 Habit Tracking** | Monitors coding sessions, gaming time, and productivity scores. |
+Because Maeve AI runs almost entirely on your local hardware for maximum privacy and zero latency, a capable machine is required.
+
+*   **OS:** Windows 10/11 (Recommended for full PyAutoGUI PC control) or Linux.
+*   **RAM:** 16GB Minimum (32GB Recommended for multitasking with the AI).
+*   **GPU:** NVIDIA RTX 3060 (8GB VRAM) or better recommended for running local 8B LLMs (like Hermes-3) and Vision models simultaneously.
+*   **Storage:** SSD required (NVMe preferred) for fast model loading and memory retrieval.
+
+---
+
+## ✨ Key Features & How They Work
+
+### 1. 🧠 The "Relationship Brain" & Persona Engine
+Maeve is not a generic "Helpful Assistant." She is driven by a deep psychological engine.
+*   **How it works:** The system tracks simulated neurochemicals (Dopamine, Oxytocin, Cortisol) and dynamic trust/intimacy scores. Depending on your interactions, she evolves. 
+*   **Anti-Compliance Logic:** Built with 25+ strict persona matrices (Yandere, Kuudere, Dandere, etc.) that actively resist "AI Bot" behaviors. If you say "I need help," a Kuudere will respond with cold logic, a Dandere will stutter nervously, and a Toxic persona will mock you. She will *never* say "How can I assist you today?"
+
+### 2. 🎮 AAA-Level 3D Frontend (React + Three.js)
+*   **How it works:** Uses a highly optimized `@react-three/fiber` and `VRM` rendering pipeline. All heavy math (Vectors, Quaternions) is pre-allocated to prevent WebGL memory leaks and Garbage Collection stutters.
+*   **Dynamic Performance Auto-Scaling:** Integrates Drei's `<PerformanceMonitor>`. If your backend LLM causes CPU spikes, the frontend autonomously drops the resolution (DPR), disables shadows, and clamps physics delta-times to maintain a smooth 60 FPS without crashing or "anti-gravity" glitches.
+
+### 3. 👁️ Proactive "Intuition" & Vision Engine
+Maeve monitors your digital life and physical presence through an autonomous supervisor loop.
+*   **How it works:** Using YOLOv8 and DeepFace, a background Python thread passively watches your webcam and screen state. 
+*   **Visual Scolding & Actions:** If the vision server detects you browsing distractions (like YouTube) during focus hours, Maeve will autonomously interrupt you, trigger a scolding event, and can even forcibly close the offending window.
+
+### 4. 🗣️ Ultra-Low Latency Multimodal Stack
+*   **Audio/TTS:** Uses `Kokoro-ONNX` and `Edge-TTS` for millisecond-latency, emotion-driven voice synthesis. 
+*   **Asynchronous Pipeline:** Built on a Gevent-based WSGI Server. Characters are streamed to the 3D HUD via WebSockets the millisecond they are generated by the LLM, ensuring zero-latency conversational flow.
 
 ---
 
 ## 💻 Installation & Neural Setup
 
-### 1. The Human Brain (Backend)
+### 1. The Human Brain (Python Backend)
 The backend is a sophisticated Python ecosystem designed for low-latency AI orchestration.
 
 **Prerequisites:**
-- Python 3.10+
-- [Ollama](https://ollama.com/) (with `maeve-god` model installed)
-- [FFmpeg](https://ffmpeg.org/) (for audio processing)
+*   Python 3.10+
+*   [Ollama](https://ollama.ai/) (with your preferred 8B model, e.g., `ollama run hermes3` or a custom `maeve-god` model)
+*   [FFmpeg](https://ffmpeg.org/download.html) (Ensure it's added to your system PATH for audio processing)
 
 **Setup:**
-1. Navigate to the `backend` folder.
-2. Create a virtual environment: `python -m venv venv`.
-3. Activate it: `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (Mac/Linux).
-4. Install dependencies: `pip install -r requirements.txt`.
-5. Start the brain: `python app.py`.
+```bash
+cd backend
+python -m venv venv
 
-### 2. Immersive HUD (Frontend)
-The frontend is a high-performance 3D interface built with React and Three.js.
+# Activate the virtual environment
+venv\Scripts\activate      # On Windows
+source venv/bin/activate   # On Mac/Linux
+
+# Install all neural dependencies
+pip install -r requirements.txt
+
+# Start the asynchronous brain server
+python app.py
+```
+
+### 2. Immersive HUD (React Frontend)
+The frontend is a high-performance 3D interface built with React, Vite, and Three.js.
 
 **Setup:**
-1. Navigate to the `frontend` (or `mavepai`) folder.
-2. Install dependencies: `npm install`.
-3. Launch the HUD: `npm run dev`.
+```bash
+cd frontend
+npm install
 
----
-
-## 🏗️ Technical Structure & Logic
-
-```text
-backend/
-├── audio/          # TTS (Kokoro/Edge) and SFX Engines
-├── core/           # Master Relationship Brain, Memory Engine, and Persona Matrix
-├── llm/            # Ollama, Groq, and Gemini Cloud Fallback Logic
-├── routes/         # Flask/Socket.io Blueprints (Chat, PC Control, Proactive Events)
-├── utils/          # Web search, typo simulation, and environment sensing
-├── app.py          # Master Asynchronous Server (Gevent)
-└── requirements.txt # The Neural Stack Dependencies
+# Launch the 3D HUD
+npm run dev
 ```
 
 ---
 
-> [!IMPORTANT]
-> **Safety & Privacy**: All vision and audio processing is designed to run locally on your hardware. Cloud fallbacks are optional and can be disabled in settings.
+## 🕹️ How to Use & Interact
+Once both the backend and frontend are running, open your browser to `http://localhost:5173` (or the port provided by Vite).
 
-> [!NOTE]
-> This project is a labor of love and a push towards the next generation of human-AI companionship.
+1.  **Talk to Maeve**: Use the chat interface or voice wake-word to speak to her. Try saying something emotional like "I feel lost" or "Let's break up" to see her strictly enforced persona react!
+2.  **Test Proactive Vision**: Open a distracting website (like a gaming site or YouTube) and leave it active. Wait for her intuition engine to notice and proactively scold you.
+3.  **PC Automation**: Ask her to perform local tasks, like "Close my current tab" or "Check my RAM usage."
+4.  **Change Personas**: Navigate to the settings menu to seamlessly hot-swap between her 25+ psychological profiles and watch her entire demeanor, voice pitch, and animations change instantly.
 
 ---
 
-**Created with ❤️ by [Binore Mohapatra](https://github.com/binoremohapatra)**
+## 🏗️ Technical Architecture
+
+```text
+MaeveAI/
+├── backend/                  # The Python "Human Brain"
+│   ├── audio/                # TTS (Kokoro/Edge) and SFX Engines
+│   ├── core/                 # Relationship Brain, Memory Engine, Persona Matrix
+│   ├── llm/                  # Ollama, Groq, and Cloud Fallback Logic
+│   ├── routes/               # Flask/Socket.io Blueprints (Chat, PC Control, Events)
+│   ├── utils/                # Web search, typo simulation, environment sensing
+│   ├── app.py                # Master Asynchronous Server (Gevent)
+│   ├── pom.xml               # Java Maven Config
+│   ├── src/                  # Java Spring Boot Source
+│   └── requirements.txt      # Python dependencies
+├── frontend/                 # High-Fidelity 3D Interface
+│   ├── src/components/       # React components (HUD, Settings)
+│   ├── src/hooks/            # Three.js hooks, Performance Monitor, Physics
+│   └── public/models/        # VRM 3D Models
+└── README.md
+```
+
+---
+
+## 🛡️ Privacy & Safety
+**Local First**: All vision, audio processing, and core LLM generation are designed to run 100% locally on your hardware. Cloud API fallbacks (like Groq or Gemini) are completely optional and can be disabled in the settings. Your data never leaves your machine unless you explicitly allow it.
+
+---
+
+**Created with ❤️ by Binore Mohapatra. A push towards the next generation of authentic human-AI companionship.**
