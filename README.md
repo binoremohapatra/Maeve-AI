@@ -5,114 +5,125 @@
 [![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-black?style=for-the-badge&logo=three.dot-js&logoColor=white)](https://threejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 
-**Maeve AI** is a state-of-the-art, immersive 3D AI assistant platform. Built with a "World-class 3D HUD" philosophy, it combines high-fidelity VRM character rendering, real-time speech recognition, and a dynamic interaction system to create a truly responsive digital companion.
-
----
-
-## ✨ Key Features
-
-- **🎭 High-Fidelity VRM Integration**: Supports full VRM character models with spring-bone physics, facial expressions, and high-quality textures.
-- **🗣️ Real-time Lip-Sync & Speech**: Integrated speech recognition and procedural lip-syncing for realistic conversations.
-- **🕹️ Immersive 3D HUD**: A premium, responsive interface featuring modules for Care, Wellness, Device Management, and Scheduling.
-- **🎵 Spotify Neural Link**: Seamlessly connect and control your Spotify playback with real-time mood-based interactions.
-- **🌌 Dynamic Environments**: Fully customizable 3D environments with starry backgrounds and reactive lighting.
-- **🧠 Advanced State Management**: Powered by Zustand and Firebase for lightning-fast responsiveness and data persistence.
+**Maeve AI** is a state-of-the-art, immersive 3D AI assistant platform. It combines a high-fidelity 3D HUD with a sophisticated Python-based "Human Brain" backend to create a truly responsive and proactive digital companion.
 
 ---
 
 ## 🛠️ How the System Works
 
-Maeve AI is built on a modern, distributed architecture designed for low-latency interactions and high visual quality.
+Maeve AI is built on a distributed architecture where the **3D HUD** (Frontend) and the **Intelligence Engine** (Backend) communicate in real-time via high-speed WebSockets.
 
-### 1. Rendering Engine (Frontend)
-The core of Maeve is built using **React 19** and **Three.js** (via **React Three Fiber**). This allows for a declarative 3D scene where the character and UI coexist in a unified space.
-- **VRM Controller**: Uses `@pixiv/three-vrm` to handle character animations, gaze tracking (following your mouse), and blend-shape expressions.
-- **HUD Layer**: A high-performance overlay built with **Tailwind CSS** and **Framer Motion** for smooth transitions and glassmorphism effects.
+### 1. The Human Brain (Backend)
+The backend is a sophisticated Python ecosystem designed for low-latency AI orchestration.
+- **AGI Kernel**: Powered by a custom-tuned **Ollama** model (`maeve-god`) with cloud fallbacks to **Gemini 2.5 Flash** and **Groq (Llama-3.3-70b)**.
+- **Personality Engine**: Features 18+ dynamic personas (Yandere, Tsundere, Goth Mommy, Dominant, etc.) that adapt their speech, emotions, and animations in real-time.
+- **Relationship Brain**: A complex state machine that tracks user trust, intimacy, and psychological profiles to influence interaction depth.
+- **Memory Engine**: Utilizes "Core Memories" triggered by emotional keywords and long-term chat history storage.
 
-### 2. AI Intelligence (Backend)
-The brain of Maeve is a high-performance Python backend that handles complex AI tasks.
-- **Vision & Emotion**: Integrated vision services for real-time environment awareness and emotion detection.
-- **Neural TTS**: Sophisticated Text-to-Speech engine using Kokoro and ONNX for natural, expressive voice synthesis.
-- **Proactive Initiative**: An autonomous engine that allows Maeve to take initiative and start conversations based on user context.
+### 2. Proactive Initiative & Vision
+Unlike standard assistants, Maeve is **proactive**.
+- **Omniscient Vision**: Integrated vision server using **YOLOv8** and **Mediapipe** to detect user activity, exhaustion, or distractions (e.g., gaming instead of working).
+- **Proactive Alerts**: Maeve can initiate conversations based on visual triggers (e.g., scolding you for working too late) or idle timeouts.
+- **Nagging Engine**: A background service that periodically checks in on your wellness and productivity.
 
-### 3. Interaction & Logic
-- **Socket Bridge**: A WebSocket-based worker bridge handles real-time data flow between the AI brain and the 3D representation.
-- **Mood System**: A sophisticated state machine that tracks Maeve's "mood," influencing her animations, speech patterns, and even the UI vibe.
-- **Neural Links**: Direct integrations with services like Spotify to create a holistic assistant experience.
+### 3. System Integration & Tool Dispatch
+Maeve has direct control over your environment via a 3-tier tool system:
+- **Autonomous Tools**: Real-time media control, music playback, and screen analysis.
+- **System Commands**: Control PC power states, window management, system volume, and hardware monitoring.
+- **Platform Tools**: Send WhatsApp messages, emails, or search the web for real-time news.
 
----
-
-## 💻 Getting Started (PC)
-
-Follow these steps to get Maeve AI running on your local machine.
-
-### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/binoremohapatra/Maeve-AI.git
-   cd mavepai
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Set up Environment Variables:**
-   - Copy `.env.example` to `.env`
-   - Fill in your Firebase and API credentials.
-   ```bash
-   cp .env.example .env
-   ```
-
-4. **Launch the Development Server:**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open in Browser:**
-   - Navigate to `http://localhost:5173` (or the port shown in your terminal).
+### 4. High-Fidelity 3D HUD (Frontend)
+- **VRM Controller**: Uses `@pixiv/three-vrm` for character physics, gaze tracking, and blend-shape expressions.
+- **Audio-Visual Sync**: Real-time lip-syncing powered by the backend's **Kokoro ONNX** TTS engine and **SFX** generation.
 
 ---
 
-## 🎮 Basic Interactions
+## ✨ Core Features
 
-- **Mouse Movement**: Maeve's eyes and head will track your cursor in real-time.
-- **Radial Menu**: Use the central dock to navigate between different HUD modules (Settings, Wellness, etc.).
-- **Voice Commands**: Click the microphone icon or use the wake-word (if configured) to speak to Maeve.
-- **Chat Input**: Type commands directly in the expandable chat bar for instant feedback.
+| Feature | Description |
+| :--- | :--- |
+| **🎭 Multi-Persona** | Switch between 18+ distinct personalities with unique rules and boundaries. |
+| **🧠 Memory Retrieval** | Recalls past interactions and core emotional memories to build a long-term bond. |
+| **👁️ Vision Awareness** | Detects objects, people, and user frustration via webcam/screen analysis. |
+| **🕹️ PC Automation** | Control your apps, windows, and system settings via natural language commands. |
+| **🗣️ Neural TTS** | Ultra-realistic voice synthesis using Kokoro and Edge-TTS. |
+| **🌐 Omniscient Search** | Real-time web searching to provide live data on any topic. |
+| **📈 Habit Tracking** | Monitors coding sessions, gaming time, and productivity scores. |
 
 ---
 
-## 🏗️ Project Structure
+## 💻 Installation & Setup
+
+### Backend Prerequisites
+- Python 3.10+
+- [Ollama](https://ollama.com/) (with `maeve-god` model installed)
+- [FFmpeg](https://ffmpeg.org/) (for audio processing)
+
+### Backend Installation
+
+1. **Navigate to the backend folder:**
+   ```bash
+   cd backend
+   ```
+
+2. **Create a Virtual Environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   ```
+
+3. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configuration:**
+   - Copy `.env.example` to `.env`.
+   - Add your `GEMINI_API_KEY` or `GROQ_API_KEY` for cloud fallbacks.
+
+5. **Start the Brain:**
+   ```bash
+   python app.py
+   ```
+
+### Frontend Installation
+Refer to the [Frontend README](./frontend/README.md) for detailed UI setup.
+
+---
+
+## 🏗️ Backend Structure
 
 ```text
-mavepai/
-├── public/          # Static assets (3D models, textures, banner)
-├── src/
-│   ├── components/  # React components (VRMScene, HUD, etc.)
-│   ├── stores/      # State management (Zustand)
-│   ├── vibe/        # Visual effects and themes
-│   ├── hooks/       # Custom React hooks
-│   └── App.tsx      # Main application entry
-├── package.json     # Project dependencies and scripts
-└── vite.config.js   # Vite configuration
+backend/
+├── audio/          # TTS (Kokoro/Edge) and SFX Engines
+├── core/           # Relationship Brain, Memory, and Persona Logic
+├── llm/            # Ollama and Cloud API Clients (Gemini/Groq)
+├── routes/         # Flask/Socket.io Blueprints (Chat, PC, Proactive)
+├── utils/          # Web search, typo engine, and environment utils
+├── app.py          # Main entry point (Asynchronous Gevent Server)
+└── requirements.txt # Python dependencies
 ```
 
 ---
 
-> [!NOTE]
-> This project is currently in active development. Features and UI components are subject to change.
+## 📦 Key Dependencies
+
+- **AI**: `google-genai`, `requests` (Ollama), `faster-whisper`.
+- **Vision**: `deepface`, `ultralytics` (YOLOv8), `mediapipe`, `opencv-python`.
+- **Audio**: `kokoro-onnx`, `edge-tts`, `pydub`, `sounddevice`.
+- **System**: `pyautogui`, `psutil`, `pygetwindow`, `pytesseract`.
+- **Web**: `flask-socketio`, `fastapi`, `uvicorn`, `beautifulsoup4`.
+
+---
 
 > [!IMPORTANT]
-> **Safety & Content**: Some modules may contain mature themes. User discretion is advised.
+> **Privacy Note**: Maeve utilizes local camera and screen data for proactive features. All visual processing is done locally unless specifically configured for cloud analysis.
+
+> [!TIP]
+> Use the **Settings Screen** in the HUD to toggle between different AI providers (Local Ollama vs Cloud Gemini) for optimal performance.
 
 ---
 
