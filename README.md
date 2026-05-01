@@ -45,7 +45,7 @@ Maeve has direct control over your environment via a 3-tier tool system:
 
 | Feature | Description |
 | :--- | :--- |
-| **🎭 Multi-Persona** | Switch between 18+ distinct personalities with unique rules and boundaries. |
+| **🎭 Multi-Persona** | Switch between distinct personalities with unique rules and boundaries. |
 | **🧠 Memory Retrieval** | Recalls past interactions and core emotional memories to build a long-term bond. |
 | **👁️ Vision Awareness** | Detects objects, people, and user frustration via webcam/screen analysis. |
 | **🕹️ PC Automation** | Control your apps, windows, and system settings via natural language commands. |
