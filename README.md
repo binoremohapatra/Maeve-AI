@@ -38,6 +38,7 @@ graph TD
     classDef python fill:#1e1e1e,stroke:#ffd43b,stroke-width:2px,color:#fff;
     classDef java fill:#1e1e1e,stroke:#b07219,stroke-width:2px,color:#fff;
     classDef ai fill:#1e1e1e,stroke:#ff7043,stroke-width:2px,color:#fff;
+    classDef ext fill:#1e1e1e,stroke:#4caf50,stroke-width:2px,color:#fff;
 
     User((👤 User)):::user
 
@@ -48,34 +49,47 @@ graph TD
 
     subgraph PythonBackend [🐍 Python AGI Supervisor]
         Router[🔗 WebSocket Router]:::python
-        Brain[🧠 Relationship Brain & Memory]:::python
+        Vosk[🎙️ Vosk Offline Wake Word]:::python
+        Brain[🧠 Relationship Brain & Prompt Engine]:::python
+        Memory[(💾 JSON/SQLite Memory Ledger)]:::python
+        Tools[🛠️ Web Search & Tools]:::python
         Vision[👁️ DeepFace / YOLOv8 Vision]:::python
-        Audio[🔊 Kokoro TTS Engine]:::python
+        Audio[🔊 Kokoro TTS & SFX Engine]:::python
     end
 
     subgraph LocalAI [🤖 Local Inference]
         LLM[(🧠 Ollama: Hermes-3 8B)]:::ai
     end
 
+    subgraph External [🌍 Live Data APIs]
+        Web[Weather / Wikipedia / Web]:::ext
+    end
+
     subgraph JavaBackend [☕ Java Spring Boot]
-        SysCtrl[🛠️ Hardware Monitor]:::java
+        SysCtrl[🛠️ System & Hardware Monitor]:::java
         Auto[⌨️ PyAutoGUI Controller]:::java
     end
 
     %% Connections
-    User -->|Voice / Text| UI
+    User -->|Voice Trigger| Vosk
+    User -->|Text/Interactions| UI
     User -.->|Webcam Feed| Vision
     
     UI <-->|WebSockets JSON Stream| Router
     Perf -.->|Optimize Render| UI
     
+    Vosk -->|Wake Signal| Router
     Router <-->|Parse Intents & Context| Brain
+    
+    Brain <-->|Read/Write State| Memory
+    Brain -->|Fetch Data| Tools
+    Tools <-->|REST| Web
     Vision -.->|Proactive Alerts| Brain
     
     Brain -->|Strict Persona Prompts| LLM
     LLM -->|Stream Responses| Brain
     
-    Brain -->|Generate Voice| Audio
+    Brain -->|Generate Voice/SFX| Audio
     Audio -->|Audio Stream| UI
     
     Brain <-->|REST API Commands| SysCtrl
