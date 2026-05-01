@@ -32,14 +32,55 @@ Built with **25+ strict persona matrices** (Yandere, Kuudere, Dandere, Toxic, et
 ### Data Flow Diagram
 ```mermaid
 graph TD
-    User((User)) -->|Voice/Text| Frontend(React + Three.js HUD)
-    Frontend -->|WebSockets| PythonBrain(Python AGI Supervisor)
-    Webcam((Webcam)) -->|Frames| PythonBrain
-    PythonBrain -->|Prompt| LLM[Local Ollama / Hermes 3]
-    LLM -->|JSON Stream| PythonBrain
-    PythonBrain -->|Neuro-State & TTS| Frontend
-    PythonBrain <-->|REST API| JavaSpring(Java System Controller)
-    JavaSpring -->|PyAutoGUI| OS(Windows OS / PC Apps)
+    %% Styling Definitions
+    classDef user fill:#2d3436,stroke:#61dafb,stroke-width:2px,color:#fff;
+    classDef frontend fill:#20232a,stroke:#61dafb,stroke-width:2px,color:#fff;
+    classDef python fill:#1e1e1e,stroke:#ffd43b,stroke-width:2px,color:#fff;
+    classDef java fill:#1e1e1e,stroke:#b07219,stroke-width:2px,color:#fff;
+    classDef ai fill:#1e1e1e,stroke:#ff7043,stroke-width:2px,color:#fff;
+
+    User((👤 User)):::user
+
+    subgraph Frontend [🌐 React + Three.js Frontend]
+        UI[🖥️ 3D VRM HUD & Chat]:::frontend
+        Perf[⚙️ Performance Scaler]:::frontend
+    end
+
+    subgraph PythonBackend [🐍 Python AGI Supervisor]
+        Router[🔗 WebSocket Router]:::python
+        Brain[🧠 Relationship Brain & Memory]:::python
+        Vision[👁️ DeepFace / YOLOv8 Vision]:::python
+        Audio[🔊 Kokoro TTS Engine]:::python
+    end
+
+    subgraph LocalAI [🤖 Local Inference]
+        LLM[(🧠 Ollama: Hermes-3 8B)]:::ai
+    end
+
+    subgraph JavaBackend [☕ Java Spring Boot]
+        SysCtrl[🛠️ Hardware Monitor]:::java
+        Auto[⌨️ PyAutoGUI Controller]:::java
+    end
+
+    %% Connections
+    User -->|Voice / Text| UI
+    User -.->|Webcam Feed| Vision
+    
+    UI <-->|WebSockets JSON Stream| Router
+    Perf -.->|Optimize Render| UI
+    
+    Router <-->|Parse Intents & Context| Brain
+    Vision -.->|Proactive Alerts| Brain
+    
+    Brain -->|Strict Persona Prompts| LLM
+    LLM -->|Stream Responses| Brain
+    
+    Brain -->|Generate Voice| Audio
+    Audio -->|Audio Stream| UI
+    
+    Brain <-->|REST API Commands| SysCtrl
+    SysCtrl -->|Execute| Auto
+    Auto -->|PC Actions| User
 ```
 
 ### 1. 🧠 The "Relationship Brain" & Neuro-Engine
