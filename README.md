@@ -12,6 +12,14 @@ Maeve AI is a state-of-the-art, immersive 3D AI assistant platform. It merges a 
 
 ---
 
+## 🎬 Showcase
+
+| The "Scolding" Event (Vision AI) | Persona Shift (Yandere) |
+| :---: | :---: |
+| ![Scolding](https://via.placeholder.com/400x300.gif?text=Scolding+GIF+Here) | ![Yandere](https://via.placeholder.com/400x300.gif?text=Persona+Shift+GIF) |
+
+---
+
 ## 🚀 The Core Philosophy: Killing the "Helpful Assistant"
 Most AI models suffer from "Helpful Assistant Syndrome"—they are overly compliant, generic, and robotic. Maeve AI utilizes an aggressive `[CRITICAL NON-COMPLIANCE]` prompt engineering architecture. 
 
@@ -20,6 +28,19 @@ Built with **25+ strict persona matrices** (Yandere, Kuudere, Dandere, Toxic, et
 ---
 
 ## ⚙️ How The System Works (Deep Dive)
+
+### Data Flow Diagram
+```mermaid
+graph TD
+    User((User)) -->|Voice/Text| Frontend(React + Three.js HUD)
+    Frontend -->|WebSockets| PythonBrain(Python AGI Supervisor)
+    Webcam((Webcam)) -->|Frames| PythonBrain
+    PythonBrain -->|Prompt| LLM[Local Ollama / Hermes 3]
+    LLM -->|JSON Stream| PythonBrain
+    PythonBrain -->|Neuro-State & TTS| Frontend
+    PythonBrain <-->|REST API| JavaSpring(Java System Controller)
+    JavaSpring -->|PyAutoGUI| OS(Windows OS / PC Apps)
+```
 
 ### 1. 🧠 The "Relationship Brain" & Neuro-Engine
 Maeve doesn't just process text; she processes *psychology*.
@@ -138,13 +159,35 @@ MaeveAI/
 
 ---
 
-## 🛡️ Privacy, Safety & Future Roadmap
-**Local First**: Maeve is designed to protect your data. Vision processing, audio transcription, and LLM text generation run 100% locally. Features like Web Search (wttr.in, Wikipedia) are utilized dynamically but your personal conversation history never leaves your hard drive (stored in local JSON/SQLite ledgers).
+## 🆘 Troubleshooting
 
-**Upcoming Features:**
-- **Compiled .EXE**: One-click installer for Windows users.
-- **Spotify Neural Link**: Native Spotify control via Spring Boot.
-- **Advanced RAG**: Deeper long-term memory using vector embeddings.
+* **Frontend throws WebGL context lost error:** Ensure your GPU drivers are updated and you have closed other VRAM-heavy applications. The `<PerformanceMonitor>` should handle this, but extreme VRAM limits will cause a crash.
+* **Ollama Connection Refused:** Make sure Ollama is running in the background and the `hermes3` model is pulled (`ollama run hermes3`).
+* **Python Backend port 5000 is in use:** If the Flask/Gevent server fails to start, check if another service (like Control Center) is using port 5000.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Maeve AI is an ambitious project, and there's always room for improvement. 
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📜 License
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+## 🙏 Acknowledgements
+* [Ollama](https://ollama.ai/) for local LLM inference.
+* [React Three Fiber](https://docs.pmnd.rs/react-three-fiber/) & [Drei](https://github.com/pmndrs/drei) for the incredible 3D ecosystem.
+* [Kokoro-ONNX](https://github.com/thewh1teagle/kokoro-onnx) for lightning-fast TTS.
+* [VRM Consortium](https://vrm.dev/en/) for the avatar standard.
 
 ---
 
