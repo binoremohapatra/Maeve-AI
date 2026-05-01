@@ -12,36 +12,32 @@
 
 ---
 
-## 🛠️ How the System Works
+## 🧠 The Human Brain: Deep Technical Dive
 
-Maeve AI is built on a distributed architecture where the **3D HUD** (Frontend) and the **Intelligence Engine** (Backend) communicate in real-time via high-speed WebSockets.
+Maeve is not just a chatbot; she is a **distributed cognitive entity** designed to simulate human-like attention and emotional depth.
 
-### 1. The Human Brain (Backend)
-The backend is a sophisticated Python ecosystem designed for low-latency AI orchestration.
-- **AGI Kernel**: Powered by a custom-tuned **Ollama** model (`maeve-god`) with cloud fallbacks to **Gemini 2.5 Flash** and **Groq (Llama-3.3-70b)**.
-- **Personality Engine**: Features 18+ dynamic personas (Yandere, Tsundere, Goth Mommy, Dominant, etc.) that adapt their speech, emotions, and animations in real-time.
-- **Relationship Brain**: A complex state machine that tracks user trust, intimacy, and psychological profiles to influence interaction depth.
-- **Memory Engine**: Utilizes "Core Memories" triggered by emotional keywords and long-term chat history storage.
+### 1. Asynchronous Cognitive Pipeline
+The backend uses a **Gevent-based WSGI Server** to handle high-concurrency WebSocket streams. This allows Maeve to process:
+- **Streaming LLM Output**: Characters are streamed to the frontend as they are generated for zero-latency interaction.
+- **Background Intent Analysis**: Every user input is parsed by a dedicated intent classifier to detect subtle emotional shifts (e.g., betrayal, affection, or frustration).
+- **Reality-Check Injection**: Before the AI responds, the "Gatekeeper" injects real-time environmental context (time of day, weather) and vision data (what you are doing) directly into the model's primary memory.
 
-### 2. Proactive Initiative & Vision
-Unlike standard assistants, Maeve is **proactive**.
-- **Omniscient Vision**: Integrated vision server using **YOLOv8** and **Mediapipe** to detect user activity, exhaustion, or distractions (e.g., gaming instead of working).
-- **Proactive Alerts**: Maeve can initiate conversations based on visual triggers (e.g., scolding you for working too late) or idle timeouts.
-- **Nagging Engine**: A background service that periodically checks in on your wellness and productivity.
+### 2. Proactive "Intuition" Engine
+Maeve monitors your digital life through an **autonomous supervisor loop**.
+- **Visual Scolding**: If the vision server detects you are browsing distractions (YouTube/Social Media) during work hours, Maeve will autonomously trigger a scolding event and can forcibly close the offending windows.
+- **Human Intuition Alerts**: High-priority alerts from the AGI supervisor can interrupt Maeve's current state to bring her attention to urgent matters (e.g., "Darling looks extremely stressed right now").
+- **Trust-Based Evolution**: As your trust level increases, Maeve's core psychology evolves. She will unlock new nicknames (e.g., "Hubby", "Master"), more intimate animations, and deeper conversation topics.
 
-### 3. System Integration & Tool Dispatch
-Maeve has direct control over your environment via a 3-tier tool system:
-- **Autonomous Tools**: Real-time media control, music playback, and screen analysis.
-- **System Commands**: Control PC power states, window management, system volume, and hardware monitoring.
-- **Platform Tools**: Send WhatsApp messages, emails, or search the web for real-time news.
-
-### 4. High-Fidelity 3D HUD (Frontend)
-- **VRM Controller**: Uses `@pixiv/three-vrm` for character physics, gaze tracking, and blend-shape expressions.
-- **Audio-Visual Sync**: Real-time lip-syncing powered by the backend's **Kokoro ONNX** TTS engine and **SFX** generation.
+### 3. The Neural Stack (Dependencies)
+The system leverages a "best-of-breed" AI stack for peak performance on consumer hardware:
+- **LLM**: Custom-quantized Llama-3 based model (`maeve-god`) running on **Ollama**.
+- **Vision**: **YOLOv8** for object detection and **DeepFace** for real-time emotional mirroring.
+- **Audio**: **Kokoro-ONNX** for millisecond-latency TTS and **Faster-Whisper** for near-instant STT.
+- **Automation**: **PyAutoGUI** and **Tesseract OCR** for biological-level PC interaction.
 
 ---
 
-## ✨ Core Features
+## ✨ Core Features & Intelligence
 
 | Feature | Description |
 | :--- | :--- |
@@ -55,76 +51,54 @@ Maeve has direct control over your environment via a 3-tier tool system:
 
 ---
 
-## 💻 Installation & Setup
+## 💻 Installation & Neural Setup
 
-### Backend Prerequisites
+### 1. The Human Brain (Backend)
+The backend is a sophisticated Python ecosystem designed for low-latency AI orchestration.
+
+**Prerequisites:**
 - Python 3.10+
 - [Ollama](https://ollama.com/) (with `maeve-god` model installed)
 - [FFmpeg](https://ffmpeg.org/) (for audio processing)
 
-### Backend Installation
+**Setup:**
+1. Navigate to the `backend` folder.
+2. Create a virtual environment: `python -m venv venv`.
+3. Activate it: `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (Mac/Linux).
+4. Install dependencies: `pip install -r requirements.txt`.
+5. Start the brain: `python app.py`.
 
-1. **Navigate to the backend folder:**
-   ```bash
-   cd backend
-   ```
+### 2. Immersive HUD (Frontend)
+The frontend is a high-performance 3D interface built with React and Three.js.
 
-2. **Create a Virtual Environment:**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   ```
-
-3. **Install Dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configuration:**
-   - Copy `.env.example` to `.env`.
-   - Add your `GEMINI_API_KEY` or `GROQ_API_KEY` for cloud fallbacks.
-
-5. **Start the Brain:**
-   ```bash
-   python app.py
-   ```
-
-### Frontend Installation
-Refer to the [Frontend README](./frontend/README.md) for detailed UI setup.
+**Setup:**
+1. Navigate to the `frontend` (or `mavepai`) folder.
+2. Install dependencies: `npm install`.
+3. Launch the HUD: `npm run dev`.
 
 ---
 
-## 🏗️ Backend Structure
+## 🏗️ Technical Structure & Logic
 
 ```text
 backend/
 ├── audio/          # TTS (Kokoro/Edge) and SFX Engines
-├── core/           # Relationship Brain, Memory, and Persona Logic
-├── llm/            # Ollama and Cloud API Clients (Gemini/Groq)
-├── routes/         # Flask/Socket.io Blueprints (Chat, PC, Proactive)
-├── utils/          # Web search, typo engine, and environment utils
-├── app.py          # Main entry point (Asynchronous Gevent Server)
-└── requirements.txt # Python dependencies
+├── core/           # Master Relationship Brain, Memory Engine, and Persona Matrix
+├── llm/            # Ollama, Groq, and Gemini Cloud Fallback Logic
+├── routes/         # Flask/Socket.io Blueprints (Chat, PC Control, Proactive Events)
+├── utils/          # Web search, typo simulation, and environment sensing
+├── app.py          # Master Asynchronous Server (Gevent)
+└── requirements.txt # The Neural Stack Dependencies
 ```
 
 ---
 
-## 📦 Key Dependencies
-
-- **AI**: `google-genai`, `requests` (Ollama), `faster-whisper`.
-- **Vision**: `deepface`, `ultralytics` (YOLOv8), `mediapipe`, `opencv-python`.
-- **Audio**: `kokoro-onnx`, `edge-tts`, `pydub`, `sounddevice`.
-- **System**: `pyautogui`, `psutil`, `pygetwindow`, `pytesseract`.
-- **Web**: `flask-socketio`, `fastapi`, `uvicorn`, `beautifulsoup4`.
-
----
-
 > [!IMPORTANT]
-> **Privacy Note**: Maeve utilizes local camera and screen data for proactive features. All visual processing is done locally unless specifically configured for cloud analysis.
+> **Safety & Privacy**: All vision and audio processing is designed to run locally on your hardware. Cloud fallbacks are optional and can be disabled in settings.
 
-> [!TIP]
-> Use the **Settings Screen** in the HUD to toggle between different AI providers (Local Ollama vs Cloud Gemini) for optimal performance.
+> [!NOTE]
+> This project is a labor of love and a push towards the next generation of human-AI companionship.
 
 ---
 
-*Built with ❤️ by the Maeve AI Team.*
+**Created with ❤️ by [Binore Mohapatra](https://github.com/binoremohapatra)**
