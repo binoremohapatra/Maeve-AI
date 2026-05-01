@@ -140,6 +140,24 @@ Because Maeve AI runs almost entirely on your local hardware for maximum privacy
 
 ## 💻 Installation & Neural Setup
 
+### 🧠 Download & Run the Custom LLM (Maeve-God)
+For the true Maeve AI experience, download her custom psychological prompt model file. This file forces the LLM to strictly adhere to her persona matrices.
+
+[![Download Model](https://img.shields.io/badge/Download_Maeve--God_Model-FF9D00?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/MRBADDY/maeve-god/resolve/main/MaeveGod.txt?download=true)
+
+**How to use it locally:**
+1. Click the button above to download the `MaeveGod.txt` model file.
+2. Open your terminal in the folder where the file was downloaded.
+3. Build her brain using Ollama by running:
+   ```bash
+   ollama create maeve-god -f MaeveGod.txt
+   ```
+Test her out in your terminal:
+
+```bash
+ollama run maeve-god
+```
+
 ### 1. The Core Backend (Python & Java)
 **Prerequisites:**
 *   Python 3.10+
