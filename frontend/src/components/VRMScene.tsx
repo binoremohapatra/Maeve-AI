@@ -1391,7 +1391,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
 
       {/*  MAEVE (3D Character Container) - Always rendered so models can load */}
       <group ref={characterPositionRef} position={[0, -1.0, 0]} visible={isCharacterReadyToReveal}>
-        <group name="custom-model-container" position={[0, -0.05, 0]} rotation={[0, Math.PI, 0]}>
+        <group name="custom-model-container" position={[0, -0.05, 0]} rotation={[0, 0, 0]}>
             <DynamicAvatar
               key={"custom-" + mainPath}
               url={mainPath}
