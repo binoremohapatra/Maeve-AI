@@ -1,0 +1,21 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies (ffmpeg is needed for pydub/audio processing)
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+
+# Copy the lightweight cloud requirements
+COPY requirements-cloud.txt .
+RUN pip install --no-cache-dir -r requirements-cloud.txt
+
+# Copy all backend code (including the heavy .onnx and .bin files)
+COPY . .
+
+# Set environment to cloud so it triggers the hard-fails if things go wrong
+ENV DEPLOY_MODE=cloud
+
+EXPOSE 5000
+
+# Start the Brain using python (Gevent is patched natively inside app.py)
+CMD ["python", "app.py"]

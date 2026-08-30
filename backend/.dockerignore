@@ -1,0 +1,14 @@
+.env
+.git
+venv/
+__pycache__/
+*.pyc
+target/
+services/pc_agent_v4.py
+serviceAccountKey.json
+*_history.json
+*_profile.json
+*test_results*.json
+contacts.json
+email_creds.json
+profiles.json

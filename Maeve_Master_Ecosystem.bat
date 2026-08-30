@@ -40,7 +40,15 @@ echo.
 echo [4/8] 👁️ Starting VISION SERVICE (Port 5003) - Gemini Vision + Smart Eyes + Screen Context v3.0...
 echo    Status: ✅ Android Phone Camera + PC Webcam Fallback + ☁️ Gemini API + 🖥️ Screen Context + 👀 Smart Eyes
 echo    Features: 🧠 Hybrid Tracking + ☁️ Cloud Profiling + 🖥️ Screen Context + 🎯 Extreme Case Detection + 📱 Mobile Vision
-start /min "Vision Service" cmd /k "cd /d d:\maveai\backend && d:\maveai\backend\venv\Scripts\python.exe services\vision_server.py"
+
+for /f "tokens=1,2 delims==" %%a in ('findstr /I "DEPLOY_MODE" backend\.env 2^>nul') do set DEPLOY_MODE=%%b
+if not defined DEPLOY_MODE set DEPLOY_MODE=local
+
+if /i "%DEPLOY_MODE%"=="cloud" (
+    echo    [SKIPPED] DEPLOY_MODE is cloud. Vision service is running on Render!
+) else (
+    start /min "Vision Service" cmd /k "cd /d d:\maveai\backend && d:\maveai\backend\venv\Scripts\python.exe services\vision_server.py"
+)
 
 echo.
 echo [5/8] 🧠 Starting AGI SUPERVISOR (Port 5005) - Event-Driven Vision State Manager v3.0...

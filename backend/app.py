@@ -113,7 +113,7 @@ def handle_environment_data(data):
                 try:
                     payload = {"image": image_b64, "location": location}
                     # Photo ko tere Vision Server (Port 5003) par bhej rahe hain
-                    requests.post("http://127.0.0.1:5003/api/phone_frame", json=payload, timeout=3)
+                    requests.post(os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/api/phone_frame", json=payload, timeout=3)
                     logger.info("� [JARVIS SENSORS] Frame forwarded to Vision Server (Port 5003)")
                 except Exception as e:
                     logger.warning(f"⚠️ Vision Server (5003) offline ya busy hai: {e}")
@@ -192,6 +192,9 @@ def toggle_camera():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
+    vision_url = os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003")
+    print(f"[MODE] Running in {os.getenv('DEPLOY_MODE', 'local')} mode. Vision URL: {vision_url}")
+
     nagging_thread = threading.Thread(target=offline_nagging_engine, daemon=True)
     nagging_thread.start()
     

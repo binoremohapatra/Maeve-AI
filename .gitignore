@@ -40,10 +40,14 @@ run_tests.ps1
 test_*.py
 
 # Large files (GitHub limit 100MB)
+# Models
 *.onnx
+!backend/kokoro-v1.0.int8.onnx
 *.exe
 *.bin
+!backend/voices-v1.0.bin
 *.pt
+*.safetensors
 *.wav
 *.mp3
 

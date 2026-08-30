@@ -22,7 +22,7 @@ load_dotenv()
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
-PROACTIVE_URL  = "http://127.0.0.1:5000/api/proactive/visual_event"
+PROACTIVE_URL  = os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + "/api/proactive/visual_event"
 USER_ID        = "user_pro_01"
 #  NINJA TECHNIQUE: Reload .env on every call!
 load_dotenv(override=True)
@@ -573,14 +573,14 @@ def sync_with_vision_service():
     """Pull enhanced behavioral data from vision service"""
     try:
         # Check vision status first
-        status_response = requests.get('http://127.0.0.1:5003/status', timeout=5)
+        status_response = requests.get(os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + '/status', timeout=5)
         if status_response.status_code == 200:
             status_data = status_response.json()
             if not status_data.get("active", False):
                 logger.info(" Vision Server is in Standby. Skipping vision sync.")
                 return {}
         
-        response = requests.get('http://127.0.0.1:5003/latest_state', timeout=5)
+        response = requests.get(os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + '/latest_state', timeout=5)
         if response.status_code == 200:
             vision_data = response.json()
             behavioral_analysis = vision_data.get('behavioral_analysis', '{}')
@@ -664,7 +664,7 @@ def gemini_analysis_loop():
     while startup_attempts < max_startup_attempts:
         try:
             logger.info(f"🔍 Checking vision server status (attempt {startup_attempts + 1}/{max_startup_attempts})...")
-            status_response = requests.get("http://127.0.0.1:5003/status", timeout=5)
+            status_response = requests.get(os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/status", timeout=5)
             if status_response.status_code == 200:
                 status_data = status_response.json()
                 if status_data.get("active", False):
@@ -674,7 +674,7 @@ def gemini_analysis_loop():
                     logger.info("⏳ Vision Server in Standby, attempting to activate...")
                     # Try to activate the Vision Server
                     try:
-                        activate_response = requests.post("http://127.0.0.1:5003/activate", json={"force": True}, timeout=5)
+                        activate_response = requests.post(os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/activate", json={"force": True}, timeout=5)
                         if activate_response.status_code == 200:
                             logger.info("✅ Vision Server activated successfully!")
                             time.sleep(2)  # Give it a moment to start processing
@@ -709,14 +709,14 @@ def gemini_analysis_loop():
         # ── CHECK VISION STATUS FIRST ──
         try:
             logger.info("🔍 Checking vision server status before polling...")
-            status_response = requests.get("http://127.0.0.1:5003/status", timeout=5)
+            status_response = requests.get(os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/status", timeout=5)
             if status_response.status_code == 200:
                 status_data = status_response.json()
                 if not status_data.get("active", False):
                     # Try to activate if in standby
                     logger.info(" Vision Server in Standby, attempting to activate...")
                     try:
-                        activate_response = requests.post("http://127.0.0.1:5003/activate", json={"force": True}, timeout=5)
+                        activate_response = requests.post(os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/activate", json={"force": True}, timeout=5)
                         if activate_response.status_code == 200:
                             logger.info(" Vision Server activated for this cycle!")
                             time.sleep(1)  # Brief pause for activation
@@ -743,7 +743,7 @@ def gemini_analysis_loop():
             try:
                 logger.info("🔍 Requesting concise vision update from Master Vision Service...")
                 vision_response = requests.get(
-                    "http://127.0.0.1:5003/concise",
+                    os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/concise",
                     timeout=15
                 )
                 
@@ -893,4 +893,7 @@ def run_loop():
         logger.info("Shutting down AGI Supervisor...")
 
 if __name__ == "__main__":
+    vision_url = os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003")
+    print(f"[MODE] Running in {os.getenv('DEPLOY_MODE', 'local')} mode. Vision URL: {vision_url}")
+
     run_loop()

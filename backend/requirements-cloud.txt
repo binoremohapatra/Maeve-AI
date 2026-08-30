@@ -1,0 +1,12 @@
+flask
+flask-cors
+flask-socketio
+gevent
+gevent-websocket
+requests
+pydub
+soundfile
+kokoro-onnx
+google-generativeai
+python-dotenv
+edge-tts

@@ -30,6 +30,8 @@ try:
         KOKORO_AVAILABLE = True
         logger.info("Kokoro TTS Ready")
     else:
+        if os.getenv("DEPLOY_MODE") == "cloud":
+            raise RuntimeError(f"FATAL: Cloud deployment missing Kokoro models at {MODEL_PATH}! Check .gitignore.")
         logger.warning("Kokoro model files missing — using Edge TTS fallback")
 except Exception as e:
     logger.error(f"Kokoro init error: {e}")
