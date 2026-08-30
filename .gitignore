@@ -28,7 +28,6 @@ Thumbs.db
 logs/
 
 # Test results
-*.json
 test_results/
 comprehensive_test_results.json
 anti_bot_test_results.json
