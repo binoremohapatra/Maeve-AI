@@ -15,4 +15,4 @@ ENV VISION_MODE=cloud
 ENV PORT=5003
 EXPOSE 5003
 
-CMD uvicorn vision_server:app --host 0.0.0.0 --port ${PORT:-5003}
+CMD uvicorn vision_server:vision_app --host 0.0.0.0 --port ${PORT:-5003}

@@ -1,9 +1,10 @@
 fastapi
 uvicorn
-opencv-python
+opencv-python==4.13.0.92
 numpy
 pillow
 requests
-google-genai
+google-genai==1.70.0
+google-generativeai==0.8.6
 python-dotenv
-mediapipe
+mediapipe==0.10.5
