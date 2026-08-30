@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+opencv-python
+numpy
+pillow
+requests
+google-genai
+python-dotenv
+mediapipe

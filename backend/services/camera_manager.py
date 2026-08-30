@@ -41,6 +41,11 @@ class CameraManager:
         return None, None
     
     def activate(self, source=0, backend=None):
+        import os
+        if os.getenv("VISION_MODE") == "cloud":
+            logger.info("Running in cloud mode. Local hardware camera capture disabled.")
+            return False
+
         with self._lock:
             if self._cap and self._cap.isOpened():
                 return True

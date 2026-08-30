@@ -1,0 +1,15 @@
+gevent
+flask
+flask-cors
+flask-socketio
+requests
+google-genai
+python-dotenv
+pillow
+pydub
+soundfile
+edge-tts
+kokoro-onnx
+numpy
+groq
+duckduckgo-search
