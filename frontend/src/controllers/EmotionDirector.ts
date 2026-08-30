@@ -2,16 +2,11 @@ import { damp } from 'maath/easing';
 
 import { FULL_EMOTION_MAP, EXTREME_PERSONAS } from '../hooks/animeFaceWeights';
 
-const ADULT_EMOTIONS: Record<string, Record<string, number>> = {
-  AHEGAO: { happy: 0.2, blush: 0.9, aa: 1.0, tongueOut: 1.0, relaxed: 0.5 }, // High-Intensity Ecstasy Combo
-  ECSTASY: { happy: 0.3, blush: 0.7, aa: 0.8, tongueOut: 0.5, relaxed: 0.3 },
-  LUST: { happy: 0.3, eyeBlinkLeft: 0.5, eyeBlinkRight: 0.5, jawOpen: 0.25, mouthSmileLeft: 0.4, mouthSmileRight: 0.4 }
-};
+const ADULT_EMOTIONS: Record<string, Record<string, number>> = {};
 
 export const EMOTION_LIBRARY: Record<string, Record<string, number>> = {
   ...FULL_EMOTION_MAP,
   ...EXTREME_PERSONAS,
-  ...ADULT_EMOTIONS,
   NEUTRAL: { neutral: 1.0, relaxed: 0.1 }
 };
 
@@ -28,16 +23,13 @@ export class EmotionDirector {
 
     // Attempt fallback parsing
     let key = emotionKey.toUpperCase();
-    if (key === "MASTURBATE" || key === "BLOWJOB" || key === "BACKSHOT") {
-      key = "ECSTASY"; // Standard intense mapping
-    }
 
     const emotionData = EMOTION_LIBRARY[key];
     if (emotionData) {
       if (this.currentEmotionKey !== key) {
         this.currentEmotionKey = key;
         this.activeEmotionData = { ...emotionData };
-        this.isIntenseState = (key === 'AHEGAO' || key === 'ECSTASY');
+        this.isIntenseState = false;
         return true; // Indicates a state change (trigger blink logic upstream)
       }
     }

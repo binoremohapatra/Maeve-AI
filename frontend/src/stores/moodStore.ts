@@ -99,8 +99,6 @@ interface MoodState {
     ttsDuration: number;
     sequence: any[];
   } | null;
-  cycleSexualPosition: () => void;
-  triggerFinishSequence: () => void;
 
   // Actions
   addScheduleTask: (task: ScheduleTask) => Promise<void>;
@@ -523,30 +521,6 @@ export const useMoodStore = create<MoodState>()(
         get().setBedState(next);
       },
 
-      //  Change Position Button (Sirf Backshots ke liye)
-      cycleSexualPosition: () => {
-        const { mascot } = get();
-        const currentAction = mascot.action;
-
-        if (currentAction.startsWith('BACKSHOT')) {
-          const positions = ['BACKSHOT', 'BACKSHOT2', 'BACKSHOT3', 'BACKSHOT4'];
-          const idx = positions.indexOf(currentAction);
-          const nextAction = positions[(idx + 1) % positions.length];
-
-          set({ mascot: { ...mascot, action: nextAction } });
-          (window as any).characterManager?.play(nextAction);
-        }
-      },
-
-      //  Finish Button (Sirf Blowjob 3 trigger karne ke liye)
-      triggerFinishSequence: () => {
-        const { mascot } = get();
-        // Sirf tab trigger hoga jab Blowjob 2 (loop) chal raha ho
-        if (mascot.action === 'BLOWJOB2') {
-          set({ mascot: { ...mascot, action: 'BLOWJOB3' } });
-          (window as any).characterManager?.play('BLOWJOB3');
-        }
-      },
 
       setModelSwapping: (status) => set({ isModelSwapping: status }),
       setCinematicBlackout: (active) => set({ isCinematicBlackout: active }), //  NEW: Set cinematic blackout
@@ -1086,14 +1060,11 @@ export const useMoodStore = create<MoodState>()(
             timestamp: timestampNum
           };
 
-          const intenseActions = ['MASTURBATE', 'BACKSHOT', 'BACKSHOT2', 'BACKSHOT3', 'BACKSHOT4', 'BLOWJOB', 'BLOWJOB2', 'BLOWJOB3', 'AHEGAO', 'SEXY', 'LOVE', 'KISS'];
-          const isCurrentlyNude = intenseActions.includes(mascot.action);
-
           set({
             chatHistory: [...chatHistory, newMsg],
             mascot: {
               ...mascot,
-              action: isCurrentlyNude ? mascot.action : "THINKING",
+              action: "THINKING",
               speaking: true,
               loading: true
             }

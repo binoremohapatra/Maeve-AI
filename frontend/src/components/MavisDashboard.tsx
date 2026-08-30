@@ -14,12 +14,13 @@ import { StarryBackground } from './StarryBackground';
 import ExpandableChatInput from './ExpandableChatInput';
 import { AssistantSpeechDisplay } from './AssistantSpeechDisplay'; // Ensure this component handles the message list
 
-// Screens
-import { SettingsScreen } from './SettingsScreen';
-import { MascotCareScreen } from './MascotCareScreen';
-import { MascotWellnessScreen } from './MascotWellnessScreen';
-import { MascotDeviceScreen } from './MascotDeviceScreen';
-import { MascotScheduleScreen } from './MascotScheduleScreen';
+// Screens (Lazy Loaded)
+import { lazy } from 'react';
+const SettingsScreen = lazy(() => import('./SettingsScreen').then(m => ({ default: m.SettingsScreen })));
+const MascotCareScreen = lazy(() => import('./MascotCareScreen').then(m => ({ default: m.MascotCareScreen })));
+const MascotWellnessScreen = lazy(() => import('./MascotWellnessScreen').then(m => ({ default: m.MascotWellnessScreen })));
+const MascotDeviceScreen = lazy(() => import('./MascotDeviceScreen').then(m => ({ default: m.MascotDeviceScreen })));
+const MascotScheduleScreen = lazy(() => import('./MascotScheduleScreen').then(m => ({ default: m.MascotScheduleScreen })));
 
 
 
@@ -36,7 +37,7 @@ export const MavisDashboard: React.FC = () => {
 
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-  const { mascot, setAction, sendMessage, initializeListeners, isOnBed, setBedState, bedState, setMascotResponse } = useMoodStore();
+  const { mascot, setAction, sendMessage, initializeListeners, isOnBed, setBedState, bedState, setMascotResponse, isConnected } = useMoodStore();
 
   const { getFilterStyle } = useVibeContext();
 
@@ -60,17 +61,8 @@ export const MavisDashboard: React.FC = () => {
 
   //  Specialized Cycling Logic
 
-  const handleSexCycle = () => {
-    const positions = [
-      'BACKSHOT', 'BACKSHOT2', 'BACKSHOT3', 'BACKSHOT4', 'BACKSHOT5',
-      'FRONT', 'FRONT2'
-    ];
-    const currentIndex = positions.indexOf(mascot.action);
-    const nextPos = positions[(currentIndex + 1) % positions.length];
-    setAction(nextPos);
-  };
-
-  if (activeScreen === 'settings') return <SettingsScreen onBack={() => setActiveScreen(null)} />;
+  
+  if (activeScreen === 'settings') return <Suspense fallback={<div className="text-white flex justify-center items-center h-screen">Loading Settings...</div>}><SettingsScreen onBack={() => setActiveScreen(null)} /></Suspense>;
 
   return (
     <div
@@ -96,114 +88,25 @@ export const MavisDashboard: React.FC = () => {
 
 
 
-      {/*  BUTTON: Interaction Outro Trigger */}
-      {(mascot.action.includes('BLOWJOB') || mascot.action.includes('BACKSHOT') || mascot.action.includes('FRONT')) && (
-        <button
-          onClick={() => {
-            if ((window as any).characterManager) {
-              (window as any).characterManager.endInteraction();
-            } else {
-              setAction("BLOWJOB3");
-            }
-          }}
-          className="absolute bottom-36 right-10 px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-bold rounded-full shadow-[0_0_20px_rgba(255,0,0,0.4)] animate-pulse z-50"
-        >
-          {mascot.action.includes('BLOWJOB') ? ' Trigger BLOWJOB3C' : ' Cum / Finish'}
-        </button>
-      )}
-
-      {/*  Separate Cycle Buttons for Oral and Sex */}
-      {isOnBed && (
-        <div style={{ position: 'absolute', top: '15%', right: '20px', display: 'flex', flexDirection: 'column', gap: '15px', zIndex: 1000 }}>
-          {/* TEST BLOWJOB BUTTON */}
-          <button
-            onClick={() => {
-              if ((window as any).characterManager) {
-                (window as any).characterManager.playInteractionSequence("BLOWJOB");
-              }
-            }}
-            style={{
-              padding: '12px 24px',
-              background: 'rgba(168, 85, 247, 0.9)', // Brighter Purple
-              color: 'white',
-              borderRadius: '50px',
-              border: '2px solid #a855f7',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              boxShadow: '0 0 15px rgba(168, 85, 247, 0.6)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-             Test Blowjob
-          </button>
-
-          {/* SEX BUTTON */}
-          <button
-            onClick={handleSexCycle}
-            style={{
-              padding: '12px 24px',
-              background: 'rgba(239, 68, 68, 0.9)', // Red
-              color: 'white',
-              borderRadius: '50px',
-              border: '2px solid #ef4444',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              boxShadow: '0 0 15px rgba(239, 68, 68, 0.5)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-             Sex (Pos)
-          </button>
+      
+      {/* GLOBAL CONNECTION OVERLAY */}
+      {!isConnected && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[9999] bg-red-600/90 text-white px-4 py-2 rounded-full font-bold text-sm shadow-[0_0_15px_rgba(255,0,0,0.5)] backdrop-blur-md flex items-center gap-2 animate-pulse pointer-events-none">
+          <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+          Backend Offline - Reconnecting...
         </div>
-      )}
-
-
-
-
-
-
-
-      {bedState === 'SEX' && (
-        <button
-          onClick={() => {
-            const newState = bedState === 'SEX' ? 'SLEEP' : 'SEX';
-            setBedState(newState);
-            //  Force animation update so "Cycle" button shows up immediately
-            if (newState === 'SEX') setAction('BACKSHOT');
-          }}
-          style={{
-            position: 'absolute',
-            bottom: '240px',
-            right: '20px',
-            padding: '12px 24px',
-            background: bedState === 'SEX' ? 'rgba(200,0,0,0.85)' : 'rgba(120,0,60,0.85)',
-            color: 'white',
-            borderRadius: '50px',
-            border: `2px solid ${bedState === 'SEX' ? '#ff2020' : '#ff4caf'}`,
-            cursor: 'pointer',
-            zIndex: 1000,
-            fontWeight: 'bold',
-            boxShadow: `0 0 18px ${bedState === 'SEX' ? 'rgba(255,30,30,0.6)' : 'rgba(255,76,175,0.4)'}`,
-            transition: 'all 0.3s ease'
-          }}
-        >
-          {bedState === 'SEX' ? ' Back to Sleep' : ' Sex Position'}
-        </button>
       )}
 
       {/*  LAYER 2: HUD Screens Overlay */}
       <div className="absolute inset-0 z-10 pointer-events-none">
-        <AnimatePresence mode="wait">
-          {activeScreen === 'system' && <MascotDeviceScreen key="system" onBack={() => setActiveScreen(null)} />}
-          {activeScreen === 'care' && <MascotCareScreen key="care" onBack={() => setActiveScreen(null)} />}
-          {activeScreen === 'wellness' && <MascotWellnessScreen key="wellness" onBack={() => setActiveScreen(null)} />}
-          {activeScreen === 'schedule' && <MascotScheduleScreen key="schedule" onBack={() => setActiveScreen(null)} />}
-
-        </AnimatePresence>
+        <Suspense fallback={null}>
+          <AnimatePresence mode="wait">
+            {activeScreen === 'system' && <MascotDeviceScreen key="system" onBack={() => setActiveScreen(null)} />}
+            {activeScreen === 'care' && <MascotCareScreen key="care" onBack={() => setActiveScreen(null)} />}
+            {activeScreen === 'wellness' && <MascotWellnessScreen key="wellness" onBack={() => setActiveScreen(null)} />}
+            {activeScreen === 'schedule' && <MascotScheduleScreen key="schedule" onBack={() => setActiveScreen(null)} />}
+          </AnimatePresence>
+        </Suspense>
       </div>
 
       {/* ================= MAIN INTERFACE ================= */}

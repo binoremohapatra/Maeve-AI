@@ -60,9 +60,9 @@ def offline_nagging_engine():
                         except Exception as e:
                             print(f"Failed to send proactive alert: {e}")
             
-            # Sleep for 1 hour before checking again
-            time.sleep(3600)  # 1 hour
+           
+            time.sleep(3600)  
             
         except Exception as e:
             logger.error(f"Nagging engine error: {e}")
-            time.sleep(300)  # 5 minutes on error
+            time.sleep(300) 

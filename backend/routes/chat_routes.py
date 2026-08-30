@@ -34,6 +34,7 @@ from utils.web_search import search_web
 from core.intent_classifier import should_trigger_web_search
 import os
 from dotenv import load_dotenv, set_key
+from utils.shared_state import get_vision_context
 
 chat_bp = Blueprint('chat_bp', __name__)
 logger = logging.getLogger(__name__)
@@ -689,7 +690,8 @@ YOU MUST READ THE ACTUAL LIVE DATA AND SHARE REAL FACTS.
         logger.debug(f" Web search BLOCKED (gatekeeper): '{user_input[:60]}'")
     # =========================================================================
 
-    context_parts = [p for p in [env_context, vision_context, vision_block, memory_block, facts_block, nickname_enforcement, habit_block, voice_hint, web_context] if p]
+    hybrid_vision = get_vision_context()
+    context_parts = [p for p in [env_context, hybrid_vision, vision_context, vision_block, memory_block, facts_block, nickname_enforcement, habit_block, voice_hint, web_context] if p]
     system_context = "\n\n".join(context_parts) if context_parts else ""
     
     # DEBUG: Check web_context and system_context

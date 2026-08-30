@@ -57,7 +57,7 @@ export class MusicAnalyzer {
     //  DANCE MATRIX (Sensitive Thresholds)
     if (bass > 140) return "DANCE_COOL";   // Hip Hop / High Bass
     if (bass > 80) return "DANCE_HAPPY";    // Normal Pop
-    if (mids > 70 && bass < 80) return "DANCE_SEXY"; // Slow/Romantic
+    if (mids > 70 && bass < 80) return "DANCE_SABA"; // Slow/Romantic - Safe dance
 
     return "IDLE";
   }

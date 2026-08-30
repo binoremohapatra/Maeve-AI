@@ -10,11 +10,11 @@ def pc_control():
     
     if command == 'shutdown':
         # Graceful shutdown command
-        print("🔥 Remote shutdown command received")
+        print(" Remote shutdown command received")
         # Add actual shutdown logic here
         return jsonify({"status": "success", "message": "PC shutdown initiated"})
     elif command == 'restart':
-        print("🔄 Remote restart command received")
+        print(" Remote restart command received")
         # Add restart logic here
         return jsonify({"status": "success", "message": "PC restart initiated"})
     elif command == 'status':

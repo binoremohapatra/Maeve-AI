@@ -50,7 +50,7 @@ def sync_location():
     profiles[user_id]["settings"]["physical_context"] = current_status
     save_json(PROFILE_FILE, profiles)
     
-    # 📍 PROPER JSON RESPONSE
+    #  PROPER JSON RESPONSE
     return jsonify({
         "status": "success", 
         "message": f"Location updated: {current_status}",

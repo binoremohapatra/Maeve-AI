@@ -100,49 +100,11 @@ export const EXTREME_PERSONAS: Record<string, FaceWeights> = {
   },
 
   // Sadodere — enjoys the wrong things, twisted joy
-  SADODERE: {
-    joy: 0.50,   // She IS happy — that's the problem
-    eyesNarrow: 0.18,  // Bedroom eyes, wrong context
-    browDown: 0.12,   // Slight furrow — anticipation
-    smileFull: 0.18,   // Big gleeful smile
-    cheekPuff: 0.08,   // Holding in laughter
-  },
 
   // Yanheat — flushed, overwhelmed desire
-  YANHEAT: {
-    joy: 0.55,   // Flush of excitement
-    eyesNarrow: 0.28,  // Heavy lidded — overwhelmed
-    browUp: 0.08,   // Slightly pleading
-    smileFull: 0.20,   // Breathless smile
-    blink: 0.06,   // Heavier blinks — languid
-  },
 
   // ──────────────────────────────────────────────
-  //  HIGH LIBIDO
-  // ──────────────────────────────────────────────
-
-  NYMPHO: {
-    joy: 0.28,
-    eyesNarrow: 0.22,  // Inviting half-lid
-    smileFull: 0.12,
-    relaxed: 0.28,
-    browUp: 0.04,
-  },
-
-  DOMINANT_PASSION: {
-    angry: 0.12,   // Edge of intensity
-    joy: 0.22,
-    eyesNarrow: 0.32,  // Focused predatory gaze
-    browDown: 0.10,
-    smileFull: 0.08,
-  },
-
-  ERODERE: {
-    joy: 0.42,
-    eyesNarrow: 0.14,
-    relaxed: 0.32,
-    smileFull: 0.18,
-  },
+    // ──────────────────────────────────────────────
 
   // ──────────────────────────────────────────────
   //  ROMANTIC / SOFT
@@ -377,14 +339,6 @@ export const EXTREME_PERSONAS: Record<string, FaceWeights> = {
   },
 
   // FIX: EROHAJI — sad reduced below tear threshold
-  EROHAJI: {
-    sad: 0.28,   // FIX: was 0.40 — below tear threshold
-    joy: 0.08,
-    browUp: 0.24,
-    eyesNarrow: 0.08,
-    ou: 0.12,
-    cheekPuff: 0.10,   // Shame flush
-  },
 
   DEFAULT: {
     neutral: 0.08,
@@ -925,18 +879,6 @@ export const FULL_EMOTION_MAP: Record<string, FaceWeights> = {
     browDown: -0.06,
   },
 
-  LUST: {
-    joy: 0.18,
-    eyesNarrow: 0.50,
-    relaxed: 0.42,
-    blink: 0.14,
-    browUp: 0.08,
-    ee: 0.10,
-    cheekPuff: 0.10,
-    lookUp: 0.08,
-    browDown: 0.04,
-  },
-
   PLEASURE: {
     joy: 0.52,
     sad: 0.22,   // Overwhelmed pleasure looks teary — safe below 0.30
@@ -976,39 +918,9 @@ export const FULL_EMOTION_MAP: Record<string, FaceWeights> = {
     aa: -0.28,
   },
 
-  // FIX: AHEGAO — joy capped at 0.30 so VRM doesn't close eyes
-  // The signature is eyes rolling UP — they must stay OPEN for the roll to be visible
-  AHEGAO: {
-    joy: 0.30,   // FIX: was 0.35 — capped lower for safety
-    aa: 0.75,   // Mouth WIDE open
-    lookUp: 0.92,   // Eyes rolling UP — THE signature element
-    browUp: 0.32,
-    sad: 0.10,
-    relaxed: 0.18,
-    cheekPuff: 0.14,
-    ee: 0.06,
-    neutral: -0.32,
-    browDown: -0.22,
-    pout: -0.22,
-    eyesNarrow: -0.20, // FIX: added — suppress narrow to keep eyes open for the roll
-  },
+    // The signature is eyes rolling UP — they must stay OPEN for the roll to be visible
 
-  // FIX: ECSTASY — aa drives open mouth, joy kept moderate
-  // "NOT sleeping! Eyes slightly visible but unfocused"
-  ECSTASY: {
-    joy: 0.48,   // FIX: was 0.55 — slightly reduced for safety
-    aa: 0.52,   // Mouth WIDE open — was 0.50
-    sad: 0.10,   // FIX: was 0.12 — slight overwhelm tinge
-    browUp: 0.36,
-    relaxed: 0.28,
-    lookUp: 0.28,
-    cheekPuff: 0.14,
-    ee: 0.08,
-    neutral: -0.28,
-    browDown: -0.18,
-    pout: -0.18,
-    eyesNarrow: -0.12, // FIX: added suppress to prevent closing
-  },
+    // "NOT sleeping! Eyes slightly visible but unfocused"
 
   // Kubrick stare — cinematic horror
   POSSESSIVE_KUBRICK: {

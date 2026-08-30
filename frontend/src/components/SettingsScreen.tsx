@@ -334,7 +334,7 @@ export const SettingsScreen: React.FC<Props> = ({ onBack }) => {
                                             <motion.button
                                                 whileHover={{ scale: 1.1, color: '#ef4444' }}
                                                 whileTap={{ scale: 0.9 }}
-                                                onClick={(e) => handleDeleteCharacter(e, idx)}
+                                                onClick={(e: any) => handleDeleteCharacter(e, idx)}
                                                 className="p-2 rounded-xl hover:bg-red-500/10 text-white/20 transition-colors"
                                             >
                                                 <Trash2 size={18} />

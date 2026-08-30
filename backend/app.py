@@ -8,12 +8,36 @@ monkey.patch_all()
 import logging
 import threading
 import requests
+import time
+import gevent
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
+import base64
+import google.generativeai as genai
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure API keys from environment
+genai.configure(api_key=os.getenv("GEMINI_API_KEY", ""))
+from io import BytesIO
+from PIL import Image
+import os
 
 # ── GLOBAL CAMERA STATE ────────────────────────────────────────────────────────────────
 CAMERA_ACTIVE = False
+
+# Global variable to track the last time a photo was processed
+last_vision_time = 0
+
+from utils.shared_state import update_vision_context
+
+# Initialize Gemini if API Key is present
+if os.getenv("GEMINI_API_KEY"):
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = Flask(__name__)
 # Request size limit
@@ -67,6 +91,38 @@ from routes.chat_routes import user_preferences
 # =========================================================================
 # WEBSOCKET LISTENERS (Moved here from chat_routes.py to fix Circular Bug)
 # =========================================================================
+
+@sio.on('environment_data')
+def handle_environment_data(data):
+    global last_vision_time
+    
+    current_time = time.time()
+    # 60 second cooldown taaki spam na ho
+    if current_time - last_vision_time < 60:
+        return
+        
+    try:
+        image_b64 = data.get('image')
+        location = data.get('location', {})
+        
+        if image_b64:
+            last_vision_time = current_time 
+            
+            # 🔥 Asynchronous Forwarding: App.py chat handle karega, Vision server image!
+            def forward_to_vision_server():
+                try:
+                    payload = {"image": image_b64, "location": location}
+                    # Photo ko tere Vision Server (Port 5003) par bhej rahe hain
+                    requests.post("http://127.0.0.1:5003/api/phone_frame", json=payload, timeout=3)
+                    logger.info("� [JARVIS SENSORS] Frame forwarded to Vision Server (Port 5003)")
+                except Exception as e:
+                    logger.warning(f"⚠️ Vision Server (5003) offline ya busy hai: {e}")
+
+            gevent.spawn(forward_to_vision_server)
+            
+    except Exception as e:
+        logger.error(f"⚠️ [SENSOR ERROR]: {e}")
+
 
 @sio.on("connect")
 def on_connect():

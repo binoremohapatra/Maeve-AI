@@ -27,11 +27,11 @@ export const getBaseUrl = (port: number, protocol = 'http') => {
 
 //  GLOBAL API ENDPOINTS (Exported for everywhere)
 export const API_ENDPOINTS = {
-    BRAIN: getBaseUrl(5000),             // HTTP: 5000
-    BRAIN_WS: getBaseUrl(5000, 'ws'),    // WS: 5000
-    VISION_WS: `${getBaseUrl(5006, 'ws')}/ws/vision`, // WS: 5006
-    JAVA_CORE: getBaseUrl(8080),         // HTTP: 8080
-    TTS: getBaseUrl(5003)                //   NEW: Smart Voice Engine
+    BRAIN: import.meta.env.VITE_TTS_SERVER_URL || getBaseUrl(5000),
+    BRAIN_WS: (import.meta.env.VITE_TTS_SERVER_URL || getBaseUrl(5000)).replace(/^http/, 'ws'),
+    VISION_WS: `${import.meta.env.VITE_VISION_SERVER_URL || getBaseUrl(5006, 'ws')}/ws/vision`,
+    JAVA_CORE: import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || getBaseUrl(8080),
+    TTS: import.meta.env.VITE_TTS_SERVER_URL || getBaseUrl(5003)
 };
 
 //  CROSS-ACTION SYSTEM

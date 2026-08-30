@@ -2,7 +2,6 @@ import { Suspense, useEffect, useRef, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, PerformanceMonitor } from '@react-three/drei';
 import { MainCharacterController } from '../controllers/MainCharacterController';
-import { AdultCharacterController } from '../controllers/AdultCharacterController';
 import { HumanAnimationController } from '../controllers/HumanAnimationController';
 import { CharacterManager } from '../controllers/CharacterManager';
 import { useMoodStore } from '../stores/moodStore';
@@ -35,187 +34,8 @@ import { LipSyncAnalyzer } from '../utils/LipSyncAnalyzer';
 
 
 
-//  SEX PROP — Hips Bone Tracked (Every Frame, No Locking)
-// Tip always at the pussy slit. Shaft extends toward camera. Character animates around it.
-const SexProp = ({ isVisible, animationName, vrm }: { isVisible: boolean, animationName: string, vrm: any }) => {
-  const groupRef = useRef<THREE.Group>(null);
-  const { scene: rawScene } = useGLTF('/models/P.glb');
-  const scene = useMemo(() => rawScene.clone(), [rawScene]);
-
-  // Reusable vectors — avoids GC pressure
-  const _bonePos = useMemo(() => new THREE.Vector3(), []);
-  const _boneQuat = useMemo(() => new THREE.Quaternion(), []);
-  const _localOff = useMemo(() => new THREE.Vector3(), []);
-  const _tipPos = useMemo(() => new THREE.Vector3(), []);
-  //  PERF FIX: Pre-allocated for penetrationAxis — avoids new Vector3 every frame
-  const _penAxis = useMemo(() => new THREE.Vector3(), []);
-
-  useFrame(() => {
-    if (!groupRef.current) return;
-
-    groupRef.current.visible = isVisible;
-    if (!isVisible || !vrm) return;
-
-    const isBlowjob = animationName.toUpperCase().includes('BLOWJOB');
-
-    //  Get the right bone
-    const bone = isBlowjob
-      ? (vrm.humanoid?.getRawBoneNode('head') ?? vrm.scene.getObjectByName('Head'))
-      : (vrm.humanoid?.getRawBoneNode('hips') ?? vrm.scene.getObjectByName('Hips'));
-    if (!bone) return;
-
-    //  Sample bone world transform EVERY FRAME
-    bone.getWorldPosition(_bonePos);
-    bone.getWorldQuaternion(_boneQuat);
-
-    //  Per-animation bone-local offsets (tuned for each pose/camera angle)
-    // Coordinate system: bone-local space. VRM hips bone faces forward (+Z when charRotY=0)
-    // Y = vertical (negative = down), Z = forward/backward, X = left/right
-    const PER_ANIM_OFFSET: Record<string, [number, number, number]> = {
-      // === BACKSHOT (from-behind, camera close behind) ===
-      // Character bends forward, pussy slit visible between cheeks facing camera
-      BACKSHOT: [0.02, -0.17, 0.23],  //  Nudged X to align with red line center
-      BACKSHOT2: [0.02, -0.17, 0.05],
-      BACKSHOT3: [0.02, -0.17, -0.1],
-      BACKSHOT4: [0.02, -0.17, 0.05],
-      BACKSHOT5: [0.02, -0.17, -0.025],  // Moves from back/neck down to pussy
-      // === FRONT / MISSIONARY (from-front, camera above) ===
-      // Character on back, pussy faces upward toward camera
-      FRONT: [0.02, -0.15, 0.04],  // further back (toward bed), below hips
-      FRONT2: [0.02, -0.15, 0.04],
-      FRONTSLOW: [0.02, -0.15, 0.04],
-      MASTURBATE: [0.02, -0.14, 0.04],
-      // === BLOWJOB (head bone target) ===
-      BLOWJOB1: [0.02, -0.045, 0.05], // X-Nudged for perfect centering
-      BLOWJOB: [0.02, -0.045, 0.05],
-      BLOWJOB2: [0.02, -0.045, 0.05],
-      BLOWJOB3: [0.02, -0.045, 0.05],
-    };
-
-    const key = animationName.toUpperCase();
-    const offArr = PER_ANIM_OFFSET[key] ?? [0, -0.13, 0.02];
-    _localOff.set(offArr[0], offArr[1], offArr[2]);
-    //  Transform local offset into world space using bone's current state
-    _tipPos.copy(_localOff).applyQuaternion(_boneQuat).add(_bonePos);
-
-    //  Shaft Len & Midpoint (half-penetration)
-    const shaftLen = 0.16; // shaft length in world units at current scale
-    const halfLen = shaftLen / 2;
-
-    //  SEDA FIX: Orientation is NOW BONE-LOCKED (Always follows body center)
-    // No more camera-based 'tedha' (crooked) tilt!
-    // Bone faces +Z (forward into pussy). Balls face away from body center.
-    groupRef.current.quaternion.copy(_boneQuat);
-
-    //  BLOWJOB/FRONT/BACKSHOT orientation logic
-    if (isBlowjob) {
-      //  BLOWJOB: Flip and point STRAIGHT into mouth (like Front/Backshot)
-      // Tip (model Z-) points to her face. Shaft follows head rotation perfectly.
-      groupRef.current.rotateY(Math.PI);
-      //  NO EXTRA TILT! Straight is better.
-    } else {
-      //  BACKSHOT/FRONT: Enter from behind (Hips/Pussy)
-      groupRef.current.rotateY(-Math.PI);
-      groupRef.current.rotateX(-Math.PI / 2); // Tilt up into the body 90 degrees
-    }
-
-    //  Position the group: MIDPOINT at target slit
-    // Get direction where tip is pointing (local +Z or -Z after rotates)
-    //  PERF FIX: Reuse pre-allocated _penAxis vector — avoids new Vector3 every frame
-    _penAxis.set(0, 0, -2).applyQuaternion(groupRef.current.quaternion).normalize();
-    groupRef.current.position.copy(_tipPos).addScaledVector(_penAxis, halfLen);
-
-    groupRef.current.scale.setScalar(0.0006);
-  });
-
-  return (
-    <group ref={groupRef}>
-      <Suspense fallback={<mesh><sphereGeometry args={[0.02, 16, 16]} /><meshStandardMaterial color="hotpink" /></mesh>}>
-        <primitive object={scene} />
-      </Suspense>
-    </group>
-  );
-};
-
 
 const INTERACTION_OFFSETS: Record<string, any> = {
-  // --- GROUP 1: FRONT (Facing User - E-W Axis) ---
-  //  TRUE POV: Camera at -2.6 (0.9m away from char at -3.5) for intimate sex POV
-  FRONT: {
-    charPos: [-3.3, -0.8, -3.2], charRotY: Math.PI / 2,
-    camPos: [-2.6, 0.4, -3.2], camLookAt: [-3.5, -0.2, -3.2], fov: 65,
-    propPos: [-2.7, -0.3, -3.2], propRot: [0, 0, -Math.PI / 1.7]
-  },
-  FRONT2: {
-    charPos: [-3.3, -0.8, -3.2], charRotY: Math.PI / 2,
-    camPos: [-2.6, 0.4, -3.2], camLookAt: [-3.5, -0.2, -3.2], fov: 65,
-    propPos: [-2.7, -0.3, -3.2], propRot: [0, 0, -Math.PI / 1.7]
-  },
-  FRONTSLOW: {
-    charPos: [-3.3, -0.8, -3.2], charRotY: Math.PI / 2,
-    camPos: [-2.6, 0.4, -3.2], camLookAt: [-3.5, -0.2, -3.2], fov: 65,
-    propPos: [-2.7, -0.3, -3.2], propRot: [0, 0, -Math.PI / 1.7]
-  },
-  MASTURBATE: {
-
-    charPos: [-3.0, -0.8, -3.2], charRotY: Math.PI / 2,
-    camPos: [-2.6, 0.4, -3.2], camLookAt: [-3.5, -0.2, -3.2], fov: 65,
-    propPos: [-2.7, -0.3, -3.2], propRot: [0, 0, -Math.PI / 1.7]
-  },
-
-
-  // --- GROUP 2: BACKSHOTS (Edge of Bed - Facing Wall) ---
-  // Cam at -1.0 (Strictly behind), Char at -2.2
-  BACKSHOT: {
-    charPos: [-2.1, -1.3, -3.2], charRotY: -Math.PI / 2,
-    camPos: [-1.6, 0.4, -3.2], camLookAt: [-2.2, -1.0, -3.2], fov: 50,
-    propPos: [-2, -0.42, -3], propRot: [0, 0, 0]  // char feet at -1.3, hips at -0.4
-  },
-  BACKSHOT2: {
-    charPos: [-2.0, -1.3, -2.4], charRotY: Math.PI / 4,
-    camPos: [-2.0, 0.3, -1.6], camLookAt: [-2.0, -1.0, -2.8], fov: 50,
-    propPos: [-2.0, -0.42, -2.95], propRot: [0, 0, 0]  // raised to hip height
-  },
-
-  BACKSHOT3: {
-    charPos: [-3.4, -0.7, -3.2], charRotY: -Math.PI / 2,
-    camPos: [-3, 0.4, -3.2], camLookAt: [-3.4, -0.1, -3.2], fov: 70,
-    propPos: [-3.4, 0.2, -3.2], propRot: [0, 0, 0]  // feet at -0.7, hips at +0.2
-  },
-
-  BACKSHOT4: {
-    charPos: [-2.9, -0.7, -3.2], charRotY: -Math.PI,
-    camPos: [-1.9, 0.2, -3.2], camLookAt: [-2.9, -0.7, -3.2], fov: 65,
-    propPos: [-2.9, 0.2, -3.2], propRot: [0, 0, Math.PI / 2]  // feet at -0.7, hips +0.2
-  },
-  BACKSHOT5: {
-    charPos: [-2, -0.6, -3.2], charRotY: -Math.PI / 2,
-    camPos: [-0.4, 0.8, -3.2], camLookAt: [-2.2, -0.5, -3.2], fov: 45,
-    propPos: [-2.0, 0.28, -3.2], propRot: [0, 0, 0]  // feet at -0.6, hips at +0.3
-  },
-
-  // --- GROUP 3: BLOWJOB (User on Bed, Char in front) ---
-  // User sitting on Bed at -2.8, Char at -1.9 (Floor/Edge)
-  BLOWJOB1: {
-    charPos: [-1.9, -1.2, -3.2], charRotY: -Math.PI / 2,
-    camPos: [-2.8, 0.45, -3.2], camLookAt: [-1.9, -0.6, -3.2], fov: 45,
-    propPos: [-2.0, -0.1, -3.2], propRot: [Math.PI / 2, 0, 0]
-  },
-  BLOWJOB: {
-    charPos: [-1.9, -1.2, -3.2], charRotY: -Math.PI / 2,
-    camPos: [-2.8, 0.45, -3.2], camLookAt: [-1.9, -0.6, -3.2], fov: 45,
-    propPos: [-2.0, -0.1, -3.2], propRot: [Math.PI / 2, 0, 0]
-  },
-  BLOWJOB2: {
-    charPos: [-1.9, -1.2, -3.2], charRotY: -Math.PI / 2,
-    camPos: [-2.8, 0.45, -3.2], camLookAt: [-1.9, -0.6, -3.2], fov: 45,
-    propPos: [-2.0, -0.1, -3.2], propRot: [Math.PI / 2, 0, 0]
-  },
-  BLOWJOB3: {
-    charPos: [-1.9, -1.2, -3.2], charRotY: -Math.PI / 2,
-    camPos: [-2.8, 0.45, -3.2], camLookAt: [-1.9, -0.6, -3.2], fov: 45,
-    propPos: [-2.0, -0.1, -3.2], propRot: [Math.PI / 2, 0, 0]
-  },
 
   // --- GROUP 4: ROMANCE (Close-up) ---
   NORMALKISS: { charPos: [-3.0, -0.80, -3.2], charRotY: Math.PI / 2, camPos: [-2.2, -0.2, -3.2], camLookAt: [-3.0, -0.5, -3.2], fov: 45 },
@@ -257,8 +77,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
     }))
   );
   const [mainVrm, setMainVrm] = useState<any>(null);
-  const [adultVrm, setAdultVrm] = useState<any>(null);
-  const [isCharacterReadyToReveal, setIsCharacterReadyToReveal] = useState(false);
+    const [isCharacterReadyToReveal, setIsCharacterReadyToReveal] = useState(false);
   const [isMainModelReady, setIsMainModelReady] = useState(false);
   const characterManagerRef = useRef<CharacterManager | null>(null);
   const hipsRef = useRef<THREE.Object3D | null>(null);
@@ -266,9 +85,9 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
   const controlsRef = useRef<any>(null);
 
   //  Phase 3: Physics & Camera Distortion Engine
-  useVRMTracking(mainVrm || adultVrm);
+  useVRMTracking(mainVrm);
   useDollyZoom();
-  useGravityHack(mainVrm || adultVrm);
+  useGravityHack(mainVrm);
 
   //  Web Audio Custom Hooks
   const visemesRef = useLipSync(activeAudioElement);
@@ -340,7 +159,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
   const { updateSoul } = useSoulAwarenessEngine();
 
   //  THE VOICE REACTIVITY ENGINE (Head Bobs/Nods)
-  useVoiceReactivityEngine(mainVrm || adultVrm, mascot.audio_url, currentMode, mascot.speaking);
+  useVoiceReactivityEngine(mainVrm, mascot.audio_url, currentMode, mascot.speaking);
 
   // ──  PERSONA TO INTENSITY MAPPING ──
   useEffect(() => {
@@ -366,8 +185,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
   // Spring physics now handle transition timing (lerpSpeed is legacy, ignored internally)
   const isInCinematicFace = kissStateMachineRef.current.phase !== 'NONE' || typingNavPhaseRef.current !== 'IDLE';
 
-  const showAdult = (bedState as string) === 'SEX';
-  const activeVrm = showAdult ? adultVrm : mainVrm;
+    const activeVrm = mainVrm;
 
   const { emotionTimeRef } = useRestingFaceEngine({
     vrm: activeVrm,
@@ -622,7 +440,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
 
   // VRM paths — Moved up for useEffect dependencies
   const mainPath = isDefaultMaeve ? '/models/maevewithclothes.vrm' : activeChar.url;
-  const adultPath = isDefaultMaeve ? '/models/maevenude.vrm' : activeChar.url;
+  
 
   //  NUCLEAR CLEANUP ENGINE — Prevent VRAM leaks and Context Lost errors
   useEffect(() => {
@@ -655,9 +473,9 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
       };
 
       disposeVrm(mainVrm);
-      disposeVrm(adultVrm);
+      
     };
-  }, [mainPath, adultPath]); // Trigger when URLs change
+  }, [mainPath]); // Trigger when URLs change
 
   //  Trigger swap transition overlay when bedState changes
   useEffect(() => {
@@ -675,7 +493,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
 
 
   //  Handle Model Loading & Controller Setup
-  const handleModelLoaded = (model: any, isAdult: boolean) => {
+  const handleModelLoaded = (model: any) => {
     const vrm = model.vrm;
     const scene = model.scene;
 
@@ -757,42 +575,28 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
       tweakMaterials(vrm);
     }
 
-    if (isAdult) {
-      setAdultVrm(vrm);
-    } else {
-      setMainVrm(vrm);
+    setMainVrm(vrm);
       const hips = vrm ? vrm.humanoid?.getRawBoneNode('hips') : scene.getObjectByName('hips') || scene.getObjectByName('Hips');
       hipsRef.current = hips;
-    }
 
     //  Update CharacterManager & Re-init Controller
     if (characterManagerRef.current) {
-      if (isAdult) {
-        const oldCtrl = characterManagerRef.current.getAdultController() as any;
-        if (oldCtrl?.animationController) oldCtrl.animationController.dispose();
-        const newCtrl = new AdultCharacterController(vrm || scene);
-        newCtrl.animationController.isReversedModel = !isDefaultMaeve;
-        characterManagerRef.current.setAdultController(newCtrl);
-      } else {
         const oldCtrl = characterManagerRef.current.getMainController() as any;
         if (oldCtrl?.animationController) oldCtrl.animationController.dispose();
         const newCtrl = new MainCharacterController(vrm || scene);
         newCtrl.animationController.isReversedModel = !isDefaultMaeve;
         characterManagerRef.current.setMainController(newCtrl);
-      }
     }
   };
 
   useEffect(() => {
-    if (mainVrm && adultVrm && !characterManagerRef.current) {
+    if (mainVrm && !characterManagerRef.current) {
       const mainController = new MainCharacterController(mainVrm.vrm ? mainVrm : mainVrm.scene ? mainVrm : mainVrm);
-      const adultController = new AdultCharacterController(adultVrm.vrm ? adultVrm : adultVrm.scene ? adultVrm : adultVrm);
 
       const isCustomModel = activeCharacterIndex !== 0;
       mainController.animationController.isReversedModel = isCustomModel;
-      adultController.animationController.isReversedModel = isCustomModel;
 
-      const characterManager = new CharacterManager(mainController, adultController);
+      const characterManager = new CharacterManager(mainController);
 
       characterManagerRef.current = characterManager;
       (window as any).characterManager = characterManager;
@@ -801,7 +605,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
       characterManager.play('IDLE');
       characterManager.update(0.1);
       if (mainVrm.update) mainVrm.update(0.1);
-      if (adultVrm.update) adultVrm.update(0.1);
+      
 
       if (onControllerReady) onControllerReady(characterManager);
 
@@ -812,7 +616,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
         setIsCharacterReadyToReveal(true);
       }, 100);
     }
-  }, [mainVrm, adultVrm, onControllerReady]);
+  }, [mainVrm, onControllerReady]);
 
   // ── Physics accumulator ──
   // Accumulates real frame time. Only ticks VRM spring bones
@@ -828,7 +632,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
   // Invalidate cache on model swap
   useEffect(() => {
     blendshapeCache.current = { aa: -1, ee: -1, ih: -1, oh: -1, ou: -1 };
-  }, [mainVrm, adultVrm]);
+  }, [mainVrm]);
 
   //  ─── Camera Target Smoothing ───
   const targetCameraPosRef = useRef(new THREE.Vector3());
@@ -868,18 +672,15 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
     let cameraLogicOverridden = false;
     const currentAction = animationToPlay;
 
-    if (characterManagerRef.current && mainVrm && adultVrm) {
+    if (characterManagerRef.current && mainVrm) {
       // FBX animation mixer — runs every frame (cheap THREE.AnimationMixer tick)
       characterManagerRef.current.update(safeDelta);
 
       //  ACTIVE MODEL SELECTION — Only update the one the user sees!
-      const showAdult = (bedState as string) === 'SEX';
-      const activeVrm = showAdult ? adultVrm : mainVrm;
-      const inactiveVrm = showAdult ? mainVrm : adultVrm;
-
-      // Force visibility update (Render skip)
+            const activeVrm = mainVrm;
+            // Force visibility update (Render skip)
       if (activeVrm.scene) activeVrm.scene.visible = true;
-      if (inactiveVrm.scene) inactiveVrm.scene.visible = false;
+      
 
       // VRM spring-bone physics — throttled on low-end, only for ACTIVE model
       if (physicsAccRef.current >= PHYSICS_INTERVAL) {
@@ -1525,8 +1326,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
 
       //  THE NUCLEAR MASTERSTROKE (POSTURE & SOUL ENGINE) 
       // ONLY process the ACTIVE model to save massive GPU/CPU resources
-      const showAdult = (bedState as any) === 'SEX';
-      const activeVrm = showAdult ? adultVrm : mainVrm;
+            const activeVrm = mainVrm;
 
       const currentPersona = (currentMode || 'DEFAULT').toUpperCase();
       const currentEmotion = (mascot?.emotion || 'NEUTRAL').toUpperCase();
@@ -1562,7 +1362,7 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
       const isCinematic = bedState !== 'NONE' || kissStateMachineRef.current.phase !== 'NONE' || winkActiveRef.current;
       (window as any).__cinematicLock = isCinematic;
       updateSoul([activeVrm], state, delta, isCinematic, mascot?.emotion, mascot?.speaking);
-    } // Closes if (characterManagerRef.current && mainVrm && adultVrm)
+    } // Closes if (characterManagerRef.current && mainVrm)
 
     state.camera.updateProjectionMatrix();
   });
@@ -1591,63 +1391,23 @@ export const SceneContent = ({ onControllerReady }: { onControllerReady?: (ctrl:
 
       {/*  MAEVE (3D Character Container) - Always rendered so models can load */}
       <group ref={characterPositionRef} position={[0, -1.0, 0]} visible={isCharacterReadyToReveal}>
-        {(mainPath === adultPath) ? (
-          <group name="custom-model-container" position={[0, -0.05, 0]} rotation={[0, Math.PI, 0]}>
+        <group name="custom-model-container" position={[0, -0.05, 0]} rotation={[0, Math.PI, 0]}>
             <DynamicAvatar
               key={"custom-" + mainPath}
               url={mainPath}
               onLoad={(m) => {
                 if (m.scene) m.scene.visible = false; //  HARD HIDE INSTANTLY
-                handleModelLoaded(m, false);
-                handleModelLoaded(m, true);
+                handleModelLoaded(m);
               }}
             />
           </group>
-        ) : (
-          <>
-            <DynamicAvatar
-              key={"main-" + mainPath}
-              url={mainPath}
-              onLoad={(m) => {
-                if (m.scene) m.scene.visible = false; //  HARD HIDE INSTANTLY
-                handleModelLoaded(m, false);
-                setIsMainModelReady(true);
-              }}
-            />
-            {isMainModelReady && (
-              <group name="adult-model-container">
-                <DynamicAvatar
-                  key={"adult-" + adultPath}
-                  url={adultPath}
-                  onLoad={(m) => {
-                    if (m.scene) m.scene.visible = false; //  HARD HIDE INSTANTLY
-                    handleModelLoaded(m, true);
-                  }}
-                />
-              </group>
-            )}
-          </>
-        )}
 
         {/*  ANIME EXPRESSION VFX SUITE (Portaled to Head Bone) */}
-        <AnimeVFXSuite vrm={mainVrm || adultVrm} emotion={mascot?.emotion || 'NEUTRAL'} />
+        <AnimeVFXSuite vrm={mainVrm} emotion={mascot?.emotion || 'NEUTRAL'} />
       </group>
 
-
-      {/*  Interaction Prop (Dick Prop) logic - BONE TRACKING ENABLED */}
-      {/*  Lazy Loaded Interaction Prop - Protected by Suspense Boundary */}
-      {bedState === 'SEX' && (
-        <Suspense fallback={null}>
-          <SexProp
-            isVisible={true}
-            animationName={animationToPlay}
-            vrm={adultVrm || mainVrm}
-          />
-        </Suspense>
-      )}
-
       {/* Verse & Reality Engine handles post-processing via GameVibeR3F */}
-      <InteractionTouchEngine vrm={mainVrm || adultVrm} activePersona={currentMode} />
+      <InteractionTouchEngine vrm={mainVrm} activePersona={currentMode} />
       <CinematicPostProcessing />
     </>
   );

@@ -18,9 +18,9 @@ def trigger_pc_tool(tool_name, params):
     try:
         payload = {"tool_call": tool_name, "tool_params": params}
         requests.post(PC_AGENT_URL, json=payload, timeout=5)
-        logger.info(f"🦾 PROACTIVE PC AGENT: Executed {tool_name}")
+        logger.info(f"PROACTIVE PC AGENT: Executed {tool_name}")
     except Exception as e:
-        logger.error(f"❌ PROACTIVE PC AGENT ERROR: {e}")
+        logger.error(f" PROACTIVE PC AGENT ERROR: {e}")
 
 @proactive_bp.route('/api/proactive/visual_event', methods=['POST'])
 def visual_event_trigger():
@@ -31,9 +31,9 @@ def visual_event_trigger():
     screen_context = data.get('screen_context', 'unknown')
     user_id = data.get('user_id', 'user_pro_01')
     
-    # 🧠 Check if this is a Human Intuition Alert from AGI Supervisor
+   
     if 'intuition_alert' in data:
-        logger.info("🧠 HUMAN INTUITION ALERT RECEIVED")
+        logger.info(" HUMAN INTUITION ALERT RECEIVED")
         alert_data = data['intuition_alert']
         return process_intuition_alert(alert_data, user_id)
     
@@ -43,7 +43,7 @@ def visual_event_trigger():
     favorite_song = profile.get("settings", {}).get("favorite_song", "lofi")
 
     try:
-        # 1. 🔥 HARD FIREWALLS (Detect danger/frustration before LLM)
+        
         lethal_keywords = ["youtube", "instagram", "counter-strike", "facebook", "twitter", "steam", "cs2"]
         overwork_keywords = ["12 hours", "100% exhausted", "red eyes", "exhausted", "burnout"]
         safe_keywords = ["tutorial", "course", "study", "code", "learn", "react", "java", "windsurf", "lecture"]
@@ -55,8 +55,6 @@ def visual_event_trigger():
         is_frustrated = any(k in screen_context.lower() for k in frustration_keywords) or \
                         any(k in vision_description.lower() for k in frustration_keywords)
 
-        # 2. 🧠 BUILD THE SMART OVERRIDE CONTEXT
-        # We tell LLM exactly which JSON tool to call, utilizing the existing ollama_client pipeline!
         tool_override_prompt = ""
         if should_force_kill:
             logger.info("🛡️ SAFETY OVERRIDE: Forcing STOP_DISTRACTION via prompt")
@@ -67,13 +65,9 @@ def visual_event_trigger():
         elif is_frustrated:
             logger.info(f"🎵 ENERGY OVERRIDE: Forcing PLAY_MUSIC ({favorite_song}) via prompt")
             tool_override_prompt = f"\n[CRITICAL DIRECTIVE: The user is frustrated. You MUST output \"tool_call\": \"PLAY_MUSIC\" and \"tool_params\": {{\"song_name\": \"{favorite_song}\"}} in your JSON response.]"
-            # Hard trigger just to be safe
+          
             threading.Thread(target=trigger_pc_tool, args=("PLAY_MUSIC", {"song_name": favorite_song}), daemon=True).start()
 
-        # 3. 🚀 CALL THE MASTER PIPELINE (ask_ollama_chat)
-        # Treat the vision event as a system-injected "User Input"
-        
-        # डायनामिक प्रॉम्प्ट जो हर हालात में फिट बैठेगा
         proactive_input = f"*You observe user. Physical state: {vision_description}. Screen shows: {screen_context}.*"
         
         system_context = f"""[PROACTIVE INITIATIVE: You are noticing this behavior independently. The user hasn't said anything.
@@ -94,7 +88,7 @@ React naturally in 1-2 sentences. DO NOT say 'I see you are...', just react dire
             user_pet_name=user_name
         )
         
-        # 🔥 FIX: Handle both Python dict (on timeout) and Flask Response (on success) safely
+        
         if isinstance(response_obj, dict):
             response_data = response_obj
         else:
@@ -110,7 +104,7 @@ React naturally in 1-2 sentences. DO NOT say 'I see you are...', just react dire
         return jsonify(response_data)
         
     except Exception as e:
-        logger.error(f"❌ Error in visual event trigger: {e}")
+        logger.error(f" Error in visual event trigger: {e}")
         return jsonify({
             "replyText": "I noticed something, but my mind got a little tangled.",
             "mascotAction": "FEMALETHINKING",
@@ -158,11 +152,11 @@ def process_intuition_alert(alert_data, user_id):
         response_data["triggerType"] = "human_intuition"
         response_data["intuitionPriority"] = priority
         
-        logger.info(f"🧠 Human Intuition Response: {response_data.get('replyText', '')[:50]}...")
+        logger.info(f" Human Intuition Response: {response_data.get('replyText', '')[:50]}...")
         return jsonify(response_data)
         
     except Exception as e:
-        logger.error(f"❌ Error processing intuition alert: {e}")
+        logger.error(f" Error processing intuition alert: {e}")
         return jsonify({
             "replyText": "Something caught my attention, but I'm not sure how to respond...",
             "mascotAction": "FEMALETHINKING",
@@ -174,7 +168,7 @@ def process_intuition_alert(alert_data, user_id):
 @proactive_bp.route('/api/proactive/idle_check', methods=['POST'])
 def idle_check_trigger():
     """Feature 3: Proactive conversation initiation when user is idle"""
-    logger.info("🚀 IDLE CHECK: Proactive conversation trigger called")
+    logger.info(" IDLE CHECK: Proactive conversation trigger called")
     data = request.json
     idle_duration = data.get('idle_duration', 0)
     user_id = data.get('user_id', 'user_pro_01')
@@ -192,7 +186,7 @@ def idle_check_trigger():
         system_context = f"[PROACTIVE INITIATIVE: The user has been completely silent for {time_str}. Initiate a conversation naturally. Check in on them, or say something sweet/in-character to break the silence.]"
         user_input = "*silence*"
 
-        # 🚀 CALL THE MASTER PIPELINE
+     
         response_obj = ask_ollama_chat(
             user_input=user_input,
             user_id=user_id,
@@ -201,7 +195,7 @@ def idle_check_trigger():
             user_pet_name=user_name
         )
         
-        # 🔥 FIX: Handle both Python dict (on timeout) and Flask Response (on success) safely
+  
         if isinstance(response_obj, dict):
             response_data = response_obj
         else:
@@ -212,11 +206,11 @@ def idle_check_trigger():
         response_data["triggerType"] = "idle_timeout"
         response_data["idleDuration"] = idle_duration
 
-        logger.info(f"✅ Proactive idle message generated: {response_data.get('replyText', '')[:50]}...")
+        logger.info(f" Proactive idle message generated: {response_data.get('replyText', '')[:50]}...")
         return jsonify(response_data)
         
     except Exception as e:
-        logger.error(f"❌ Error in idle check trigger: {e}")
+        logger.error(f" Error in idle check trigger: {e}")
         return jsonify({
             "error": str(e),
             "replyText": "Hey... I was just thinking about you. Is everything okay?",

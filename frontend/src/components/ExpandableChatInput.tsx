@@ -219,7 +219,7 @@ const ExpandableChatInput: React.FC<ExpandableChatInputProps> = ({
           <motion.button
             whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             data-dodge="true"
-            onClick={(e) => {
+            onClick={(e: any) => {
               e.preventDefault(); //  Prevent any form submission issues
               console.log(" Send Button Clicked!");
               handleSend();

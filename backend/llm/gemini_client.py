@@ -1,6 +1,6 @@
 import requests
 
-# ☁️ 1. PYTHON TO GEMINI CLOUD
+#  1. PYTHON TO GEMINI CLOUD
 def call_cloud_gemini(user_msg, system_prompt, api_key):
     if not api_key: 
         raise Exception("Gemini Key Missing in Backend!")

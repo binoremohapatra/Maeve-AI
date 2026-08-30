@@ -29,6 +29,14 @@ const ALL_DANCES = [
     "DANCE_ROBOT"         // mapping to: standingdance.fbx
 ];
 
+const SAFE_ANIMATIONS = new Set([
+  "IDLE", "FEMINEIDLE", "BREATHINGIDLE", "HAPPY", "EXCITEMENT", "CHEERING",
+  "CLAPPING", "FEMALEVICTORY", "SAD", "EMPATHIC_PAIN", "DISAPPOINTMENT",
+  "ARGUING", "ANNOYED", "SHAKINGHEADNO", "CONTEMPT", "DISGUST", "BASHFUL",
+  "LOOKAROUND", "YAWN", "LAYING", "TYPING", "DRINKING", "WAVE", "FOCUS",
+  "HUGGINGKISS", "KISS", "LOVE", "ROMANCE"
+]);
+
 /**
  *  CinematicFrame Interface
  * Defines the structure for facial expressions and head movement in cinematic sequences.
@@ -165,9 +173,6 @@ export class HumanAnimationController {
         "HAPPY_GESTURE": "/animations/happyhandgesture.fbx",
         "SHY": "/animations/Bashful.fbx", // Exact case 'Bashful'
         "BASHFUL": "/animations/Bashful.fbx",
-        "CRAVING": "/animations/Bashful.fbx",
-        "SEXUAL_DESIRE": "/animations/sexydance.fbx",
-        "SEXY": "/animations/sexydance.fbx",
 
         // --- 8. Head Gestures ---
         "NOD": "/animations/headnodyes.fbx",
@@ -193,30 +198,7 @@ export class HumanAnimationController {
         "COOL": "/animations/gooddancestep.fbx",
         "GOODDANCESTEP": "/animations/gooddancestep.fbx",
 
-        // --- 10. Explicit & NSFW Content (ADULT) ---
-        "KISS": "/animations/huggingkiss.fbx",
-        "NORMALKISS": "/animations/normalkiss.fbx",
-        "BLOWKISS": "/animations/blowkiss.fbx",
-        "HUGGINGKISS": "/animations/huggingkiss.fbx",
-        "LOVE": "/animations/blowkiss.fbx",
-
-        "MASTURBATE": "/animations/mastubate.fbx", //  Spelled to match your EXACT file without 'r'
-        "AHEGAO": "/animations/mastubate.fbx",
-
-        "BACKSHOT": "/animations/backshot1.fbx",
-        "BACKSHOT2": "/animations/backshot2.fbx",
-        "BACKSHOT3": "/animations/backshot3.fbx",
-        "BACKSHOT4": "/animations/backshot4.fbx",
-        "BACKSHOT5": "/animations/backshot5.fbx",
-
-        "BLOWJOB": "/animations/blow1.fbx",
-        "BLOWJOB1": "/animations/blow1.fbx",
-        "BLOWJOB2": "/animations/blow2.fbx",
-        "BLOWJOB3": "/animations/blow3.fbx",
-
-        "FRONT": "/animations/fromfront2.fbx",
-        "FRONT2": "/animations/fromfront3.fbx",
-        "FRONTSLOW": "/animations/frontslow.fbx"
+        
     };
 
     private vrm: VRM | null = null;
@@ -314,18 +296,7 @@ export class HumanAnimationController {
         }
     ];
 
-    // ---  SOFT OVERWHELMED PHASE ---
-    // Post-intensity drained expression
-    private intenseAhegaoPool = [{
-        aa: 1.0,        // Maximum vertical open
-        ih: 0.6,        // Horizontal stretch for V-Shape
-        oh: 0,
-        blink: 0.22,    // Heavy/Nasheeli lids
-        eyeRoll: -0.58, //  Safe deep iris roll up
-        happy: 0.6,     // Intense blush/flush effect
-        relaxed: 0.4,
-        tremble: 0.05   // High intensity jitter
-    }];
+    
 
     //  Interaction Sequence Manager
     private interactionPhase: 'NONE' | 'INTRO' | 'LOOP' | 'OUTRO' = 'NONE';
@@ -698,10 +669,7 @@ export class HumanAnimationController {
                 keys: ['lean in', 'leans in', 'leans forward', 'steps closer', 'gets closer', 'moves closer'],
                 anim: 'STEPPINGFORWARD', emotion: 'WARM'
             },
-            {
-                keys: ['bite lip', 'bites lip', 'seductive', 'sexy', 'desire', 'lust', 'hungry', 'suggestive', 'wink'],
-                anim: 'SEXY', emotion: 'SEXUAL_DESIRE'
-            },
+            
             {
                 keys: ['gasp', 'shock', 'surprise', 'wide eye', 'startled', 'whoa', 'jerk', 'steps back', 'step back'],
                 anim: 'SURPRISE', emotion: 'SURPRISE'
@@ -790,6 +758,17 @@ export class HumanAnimationController {
             // Blink Sync: Force blink on major emotion/state transition to mask morph blending
             this.isBlinking = true;
             this.lastBlinkTime = this.timeAccumulator;
+        }
+
+        
+        // [SAFETY] Check for explicit content before playing audio
+        if (data.isSFX && data.mascotAction) {
+            const blockedActions = ["BLOWJOB", "AHEGAO", "MASTURBATE", "BACKSHOT", "FRONT", "SADDLE", "NYMPHO", "DOMINANT_PASSION"];
+            const act = data.mascotAction.toUpperCase();
+            if (blockedActions.some(blocked => act.includes(blocked))) {
+                console.warn("[Safe Mode] Blocked explicit SFX audio payload.");
+                return;
+            }
         }
 
         if (data.audioBase64) {

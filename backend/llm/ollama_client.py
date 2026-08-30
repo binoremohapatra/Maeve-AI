@@ -1942,8 +1942,8 @@ def ask_ollama_chat(
         engine_used  = "OLLAMA"
         logger.info(" Local Ollama Processed Successfully!")
 
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
-        logger.warning(f" Local Server Down/Timeout! Falling back to Cloud... Error: {e}")
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.HTTPError) as e:
+        logger.warning(f" Local Server Down/Timeout/Error! Falling back to Cloud... Error: {e}")
 
         groq_key   = (api_keys.get("groq") if api_keys else None) or os.getenv("GROQ_API_KEY", "")
         gemini_key = (api_keys.get("gemini") if api_keys else None) or os.getenv("GEMINI_API_KEY", "")

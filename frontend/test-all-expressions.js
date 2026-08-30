@@ -158,19 +158,13 @@ function monitorAllAnimations() {
 
     setInterval(() => {
         const currentAction = controller.animationController?.currentActionName;
-        if (['BLOWJOB', 'BACKSHOT', 'MASTURBATE'].includes(currentAction)) {
-            console.log(` PleasureFace should be active for: ${currentAction}`);
-        } else if (['AHEGAO'].includes(currentAction)) {
-            console.log(` WildExcitedFace should be active for: ${currentAction}`);
-        } else if (['BACKSHOT2', 'BLOWJOB3'].includes(currentAction)) {
-            console.log(` OverwhelmedFace should be active for: ${currentAction}`);
-        } else if (['BLOWJOB2', 'BACKSHOT3'].includes(currentAction)) {
-            console.log(` SoftBreathFace should be active for: ${currentAction}`);
+        if (['INTENSE_MODE', 'DOMINANT_ROAR', 'BATTLE_SCREAM', 'POWERFUL_SHOUT'].includes(currentAction)) {
+            console.log(` DominantRoarFace should be active for: ${currentAction}`);
         } else if (['CLOSE_INTENSE', 'FOCUSED_TEASE'].includes(currentAction)) {
             console.log(` FocusedTeaseFace should be active for: ${currentAction}`);
-        } else if (['INTENSE_MODE', 'DOMINANT_ROAR', 'BATTLE_SCREAM', 'POWERFUL_SHOUT'].includes(currentAction)) {
-            console.log(` DominantRoarFace should be active for: ${currentAction}`);
         }
+    }, 1000);
+}
     }, 1000);
 }
 

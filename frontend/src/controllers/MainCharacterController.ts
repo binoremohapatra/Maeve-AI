@@ -27,9 +27,7 @@ export class MainCharacterController {
   play(actionName: string, emotion?: string) {
     console.log(" Main Controller Playing:", actionName);
 
-    // Blocking adult actions
-    const adultActions = ["BLOWJOB", "BACKSHOT", "MASTURBATE", "AHEGAO", "FRONT", "FRONT2", "FRONTSLOW"];
-    if (adultActions.some(a => actionName.includes(a))) return;
+
 
     this.animationController.playAnimation(actionName);
 
@@ -48,35 +46,7 @@ export class MainCharacterController {
     this.animationController.dispose();
   }
 
-  //  STEP 1 — Expression Blend Setup
-  activatePleasureFace(intensity: number = 1) {
-    this.animationController.activatePleasureFace(intensity);
-  }
 
-  //  Advanced Version (Breathing Variation)
-  activatePleasureFaceDynamic() {
-    this.animationController.activatePleasureFaceDynamic();
-  }
-
-  //  Preset Name: WildExcitedFace
-  activateWildExcitedFace(intensity: number = 1) {
-    this.animationController.activateWildExcitedFace(intensity);
-  }
-
-  //  Optional: Subtle Intensity Pulse
-  activateWildExcitedFaceDynamic() {
-    this.animationController.activateWildExcitedFaceDynamic();
-  }
-
-  //  OVERWHELMED / INTENSE FACE PRESET
-  activateOverwhelmedFace(intensity: number = 1) {
-    this.animationController.activateOverwhelmedFace(intensity);
-  }
-
-  //  Make It Dynamic (More Realistic)
-  activateOverwhelmedFaceDynamic() {
-    this.animationController.activateOverwhelmedFaceDynamic();
-  }
 
   //  Expression Preset: SoftBreathFace
   activateSoftBreathFace(intensity: number = 1) {
@@ -88,16 +58,7 @@ export class MainCharacterController {
     this.animationController.activateSoftBreathFaceDynamic();
   }
 
-  //  Preset Name: FocusedTeaseFace
-  // Intense focused / dominant / teasing facial preset
-  activateFocusedTeaseFace(intensity: number = 1) {
-    this.animationController.activateFocusedTeaseFace(intensity);
-  }
 
-  //  Add Micro Intensity Pulse
-  activateFocusedTeaseFaceDynamic() {
-    this.animationController.activateFocusedTeaseFaceDynamic();
-  }
 
   //  Dramatic Open Mouth Expression (Non-Explicit)
   // For shouting, wild laughter, battle scream, playful teasing, etc.

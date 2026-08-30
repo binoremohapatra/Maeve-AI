@@ -19,29 +19,26 @@ def sanitize_output(text):
     # 2. Kill stray XML/HTML tags 
     text = re.sub(r'<[^>]+>', '', text, flags=re.DOTALL)
     
-    # 3. 🔥 THE AGGRESSIVE PREFIX & NAME KILLER
-    # शुरुआत का "Maeve:" या "Assistant:" उड़ाओ
+   
     text = re.sub(r'^\s*(maeve|assistant|ai)\b\s*[:\-\.]*\s*', '', text, flags=re.IGNORECASE).strip()
     
-    # अगर वह बीच में भी खुद को थर्ड-पर्सन में पुकारती है (e.g., "Oh... Maeve...") तो उसे भी उड़ा दो
+    
     text = re.sub(r'\b(maeve)\b\s*\.{2,}', '', text, flags=re.IGNORECASE)
     
-    # 🔥 FIX: अगर कहीं गलती से ......... (बहुत सारे डॉट्स) बन गए हैं, तो उसे 3 डॉट्स में बदल दो
+
     text = re.sub(r'\.{4,}', '...', text)
     
-    # 4. Kill standard AI apologies
+ 
     text = re.sub(r'^(As an AI|I am an AI|As an artificial intelligence).*?(\n|,)', '', text, flags=re.IGNORECASE)
     
-    # 5. Clean up stray quotes (If Llama outputs '"hey u doing ok?"')
+    
     text = text.strip()
     if text.startswith('"') and text.endswith('"'):
         text = text[1:-1].strip()
         
     # 6. Normalize spaces
     cleaned_text = re.sub(r'\s{2,}', ' ', text).strip()
-    
-    # 7. 🔥 CRITICAL JSON FALLBACK SYSTEM
-    # Try to parse as JSON first
+   
     try:
         json.loads(cleaned_text)
         return cleaned_text
@@ -66,7 +63,7 @@ def sanitize_output(text):
             return cleaned_text
             
         except json.JSONDecodeError:
-            # 🚨 EMERGENCY FALLBACK: Force valid JSON structure
+           
             logger.error("JSON repair failed, using emergency fallback")
             
             # Extract content using regex as last resort

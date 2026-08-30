@@ -5,7 +5,7 @@ health_bp = Blueprint('health_bp', __name__)
 
 @health_bp.route('/ping', methods=['GET', 'POST'])
 def ping():
-    # Ye bina kisi processing ke turant 200 OK bhejega
+   
     return jsonify({"status": "online", "message": "Neural Link Active"}), 200
 
 @health_bp.route('/health', methods=['GET'])

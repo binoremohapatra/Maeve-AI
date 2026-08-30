@@ -1,4 +1,5 @@
 import requests
+import groq
 
 # ⚡ 2. PYTHON TO GROQ CLOUD
 def call_cloud_groq(user_msg, system_prompt, api_key):
