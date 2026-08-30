@@ -62,7 +62,7 @@ start /min "Java Backend" cmd /k "cd /d d:\maveai\backend && mvn spring-boot:run
 echo.
 echo [8/8] 📱 Starting FRONTEND (Port 3001) - React 3D UI Development Server...
 echo    Status: ✅ React Development + UI Components + State Management + Real-time Updates
-start /min "React 3D UI" cmd /k "cd /d d:\mavepai && npm run dev -- --host"
+start /min "React 3D UI" cmd /k "cd /d d:\maveai\frontend && npm run dev -- --host"
 
 echo.
 echo --------------------------------------------------
@@ -118,27 +118,31 @@ set /p sync="Sync with Phone? (y/n): "
 if /i "%sync%"=="y" (
 
     echo.
-    echo [8/12] 🌐 Tunneling STEALTH MIC Service...
-    start "Tunnel STT" /min cmd /k "cloudflared tunnel --url http://localhost:5002"
-    
-    echo.
-    echo [9/12] 🌐 Tunneling PC AGENT...
-    start "Tunnel PC Agent" /min cmd /k "cloudflared tunnel --url http://localhost:5001"
-    
-    echo.
-    echo [10/12] 🌐 Tunneling BRAIN...
+    echo [8/14] 🌐 Tunneling BRAIN...
     start "Tunnel Brain" /min cmd /k "cloudflared tunnel --url http://localhost:5000"
     
     echo.
-    echo [11/12] 🌐 Tunneling AUDIO ENGINE...
+    echo [9/14] 🌐 Tunneling PC AGENT...
+    start "Tunnel PC Agent" /min cmd /k "cloudflared tunnel --url http://localhost:5001"
+    
+    echo.
+    echo [10/14] 🌐 Tunneling AUDIO ENGINE...
     start "Tunnel Audio" /min cmd /k "cloudflared tunnel --url http://localhost:5002"
     
     echo.
-    echo [12/12] 🌐 Tunneling JAVA BACKEND...
+    echo [11/14] 🌐 Tunneling VISION SERVICE...
+    start "Tunnel Vision" /min cmd /k "cloudflared tunnel --url http://localhost:5003"
+    
+    echo.
+    echo [12/14] 🌐 Tunneling AGI SUPERVISOR...
+    start "Tunnel Supervisor" /min cmd /k "cloudflared tunnel --url http://localhost:5005"
+    
+    echo.
+    echo [13/14] 🌐 Tunneling JAVA BACKEND...
     start "Tunnel Java" /min cmd /k "cloudflared tunnel --url http://localhost:8080"
     
     echo.
-    echo [13/12] 🌐 Tunneling FRONTEND...
+    echo [14/14] 🌐 Tunneling FRONTEND...
     start "Tunnel Frontend" /min cmd /k "cloudflared tunnel --url http://localhost:3001"
     
     echo.

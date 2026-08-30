@@ -51,16 +51,16 @@ load_dotenv(override=True)  # Force reload environment variables
 vision_api_key = os.getenv("GEMINI_VISION_KEY") or os.getenv("GEMINI_API_KEY")
 
 # Debug: Print what we found
-print(f"Debug: GEMINI_VISION_KEY = {os.getenv('GEMINI_VISION_KEY', 'None')[:20]}...")
-print(f"Debug: GEMINI_API_KEY = {os.getenv('GEMINI_API_KEY', 'None')[:20]}...")
-print(f"Debug: Selected key = {vision_api_key[:20] if vision_api_key else 'None'}...")
+print(f"Debug: GEMINI_VISION_KEY loaded: {'Yes' if os.getenv('GEMINI_VISION_KEY') else 'No'}")
+print(f"Debug: GEMINI_API_KEY loaded: {'Yes' if os.getenv('GEMINI_API_KEY') else 'No'}")
+print(f"Debug: Selected key loaded: {'Yes' if vision_api_key else 'No'}")
 
 if vision_api_key and genai:
     try:
         genai.configure(api_key=vision_api_key)
         gemini_client = genai.GenerativeModel("gemini-2.5-flash")
         logger.info("Gemini Vision Brain Activated")
-        logger.info(f"Using key: {vision_api_key[:20]}...")
+        logger.info(f"Using key: {'Yes' if vision_api_key else 'No'}")
     except Exception as e:
         logger.warning(f"Gemini setup failed: {e}")
         gemini_client = None
@@ -151,7 +151,7 @@ def init_camera():
     try:
         # Check if camera is allowed to run via API
         try:
-            res = requests.get("http://127.0.0.1:5000/api/vision/camera", timeout=2)
+            res = requests.get(os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + "/api/vision/camera", timeout=2)
             camera_active = res.json().get("camera_active", False)
         except:
             camera_active = False # Agar brain offline hai toh camera OFF rakho
@@ -472,7 +472,7 @@ def capture_current_frame():
     try:
         # Check if camera is allowed to run via API
         try:
-            res = requests.get("http://127.0.0.1:5000/api/vision/camera", timeout=2)
+            res = requests.get(os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + "/api/vision/camera", timeout=2)
             camera_active = res.json().get("camera_active", False)
         except:
             camera_active = False 
@@ -751,5 +751,5 @@ if __name__ == "__main__":
     print("Gemini API tracking Emotions, Headphones & Beard")
     print("Screen context now forwarded to Gemini alongside webcam")
     print("VISION SERVER IN STANDBY MODE - Waiting for frontend activation...")
-    print("   → Frontend must call /activate to start vision processing")
+    print("   -> Frontend must call /activate to start vision processing")
     uvicorn.run(vision_app, host="0.0.0.0", port=5003)
