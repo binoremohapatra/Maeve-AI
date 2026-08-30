@@ -50,17 +50,13 @@ load_dotenv(override=True)  # Force reload environment variables
 # Use GEMINI_VISION_KEY for vision server
 vision_api_key = os.getenv("GEMINI_VISION_KEY") or os.getenv("GEMINI_API_KEY")
 
-# Debug: Print what we found
-print(f"Debug: GEMINI_VISION_KEY loaded: {'Yes' if os.getenv('GEMINI_VISION_KEY') else 'No'}")
-print(f"Debug: GEMINI_API_KEY loaded: {'Yes' if os.getenv('GEMINI_API_KEY') else 'No'}")
-print(f"Debug: Selected key loaded: {'Yes' if vision_api_key else 'No'}")
+# Debug: Print what we found (DELETED FOR SECURITY)
 
 if vision_api_key and genai:
     try:
         genai.configure(api_key=vision_api_key)
         gemini_client = genai.GenerativeModel("gemini-2.5-flash")
         logger.info("Gemini Vision Brain Activated")
-        logger.info(f"Using key: {'Yes' if vision_api_key else 'No'}")
     except Exception as e:
         logger.warning(f"Gemini setup failed: {e}")
         gemini_client = None
