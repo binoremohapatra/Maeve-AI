@@ -65,7 +65,7 @@ class MaeveAPI {
         visual_vibe: visualVibe,
         source: "ui",
         api_keys: apiKeys
-      }, { timeout: 120000 }); //  FIX: Timeout badhakar 2 minute kar diya (120000 ms)
+      }, { timeout: 240000 }); //  FIX: Timeout badhakar 4 minute kar diya (240000 ms)
       return response.data;
     } catch (error) {
       console.error('Direct Chat Error:', error);

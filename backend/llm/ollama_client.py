@@ -141,7 +141,7 @@ def call_cloud_groq(user_msg: str, system_prompt: str, api_key: str) -> str:
     }
 
     payload = {
-        "model": "llama-3.3-70b-versatile",
+        "model": "qwen/qwen3.8-27b",
         "messages": [
             {
                 # Full architecture passed as system role — same as Ollama
