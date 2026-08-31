@@ -1,26 +1,14 @@
-# Use OpenJDK 17 as base image
-FROM openjdk:17-jdk-slim
-
-# Set working directory
+# Build stage
+FROM maven:3.9.6-eclipse-temurin-17-alpine AS build
 WORKDIR /app
-
-# Copy Maven wrapper and pom.xml
-COPY mvnw .
-COPY .mvn .mvn
 COPY pom.xml .
-
-# Download dependencies
-RUN ./mvnw dependency:go-offline -B
-
-# Copy source code
+RUN mvn dependency:go-offline -B
 COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Build the application
-RUN ./mvnw clean package -DskipTests
-
-# Expose port
+# Run stage
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/maeve-platform-2.0.0.jar app.jar
 EXPOSE 8080
-
-# Run the application
-# Environment variables will be passed at runtime
-CMD ["java", "-jar", "target/maeve-platform-2.0.0.jar"]
+CMD ["java", "-jar", "app.jar"]
