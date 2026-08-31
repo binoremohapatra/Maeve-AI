@@ -166,6 +166,41 @@ def call_cloud_groq(user_msg: str, system_prompt: str, api_key: str) -> str:
         logger.error(f"Groq Parse Error: {res.text}")
         raise Exception(f"Groq Error: {e}")
 
+def call_huggingface_space(user_msg: str, system_prompt: str, hf_space_url: str) -> str:
+    """
+    Fallback tier for custom Hugging Face Space using gradio_client.
+    Since the space's /chat endpoint lacks a system_prompt parameter,
+    this concatenates the system prompt directly into the user message.
+    """
+    if not hf_space_url:
+        raise Exception("HF_SPACE_URL missing! Skipping HF Space fallback.")
+        
+    try:
+        from gradio_client import Client
+        import concurrent.futures
+        
+        # Load client - this makes an initial HTTP request to fetch API info
+        client = Client(hf_space_url)
+        
+        # Concatenate system prompt and user message with an explicit JSON enforcer
+        json_enforcer = "\n\nCRITICAL INSTRUCTION: You MUST respond ONLY with a raw JSON object. Do not wrap in markdown blocks, do not add introductory text. ONLY output the JSON."
+        big_prompt = f"{system_prompt}{json_enforcer}\n\nUser: {user_msg}\nMaeve:"
+        
+        def run_predict():
+            return client.predict(message=big_prompt, api_name="/chat")
+            
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(run_predict)
+            # Timeout set to 20 seconds as requested (to account for ZeroGPU cold start)
+            res = future.result(timeout=20.0)
+            
+        return res
+        
+    except concurrent.futures.TimeoutError:
+        raise Exception(f"HF Space ({hf_space_url}) timed out after 20 seconds. (Possible ZeroGPU cold start)")
+    except Exception as e:
+        raise Exception(f"HF Space Error: {e}")
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # VALID SETS
@@ -1945,22 +1980,35 @@ def ask_ollama_chat(
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.HTTPError) as e:
         logger.warning(f" Local Server Down/Timeout/Error! Falling back to Cloud... Error: {e}")
 
+        hf_space_url = os.getenv("HF_SPACE_URL", "")
         groq_key   = (api_keys.get("groq") if api_keys else None) or os.getenv("GROQ_API_KEY", "")
         gemini_key = (api_keys.get("gemini") if api_keys else None) or os.getenv("GEMINI_API_KEY", "")
 
         try:
-            #  TRY 2: GROQ CLOUD (ultra-fast, llama-3.3-70b)
-            # Full system prompt (persona rules, vision, memory, tools) passed identically
-            logger.info("⚡ Fetching response from Groq Cloud...")
-            raw_response = call_cloud_groq(user_input, full_system_prompt, groq_key)
-            engine_used  = "GROQ"
-            logger.info(" Groq Fallback Success!")
-
-        except Exception as groq_e:
-            logger.warning(f" Groq Failed. Falling back to Gemini... Error: {groq_e}")
+            #  TRY 2: HUGGING FACE SPACE (Custom Maeve-God model)
+            if not hf_space_url:
+                raise Exception("HF_SPACE_URL not set, skipping HF Space fallback.")
+            logger.info("⚡ Fetching response from Hugging Face Space...")
+            raw_response = call_huggingface_space(user_input, full_system_prompt, hf_space_url)
+            engine_used  = "HF_SPACE"
+            logger.info(" HF Space Fallback Success!")
+            
+        except Exception as hf_e:
+            logger.warning(f" HF Space Failed/Skipped. Falling back to Groq... Error: {hf_e}")
 
             try:
-                #  TRY 3: GEMINI CLOUD (reliable backup)
+                #  TRY 3: GROQ CLOUD (ultra-fast, llama-3.3-70b)
+                # Full system prompt (persona rules, vision, memory, tools) passed identically
+                logger.info("⚡ Fetching response from Groq Cloud...")
+                raw_response = call_cloud_groq(user_input, full_system_prompt, groq_key)
+                engine_used  = "GROQ"
+                logger.info(" Groq Fallback Success!")
+
+            except Exception as groq_e:
+                logger.warning(f" Groq Failed. Falling back to Gemini... Error: {groq_e}")
+
+                try:
+                    #  TRY 4: GEMINI CLOUD (reliable backup)
                 # Full system prompt passed identically — same architecture, different engine
                 logger.info(" Fetching response from Gemini Cloud...")
                 raw_response = call_cloud_gemini(user_input, full_system_prompt, gemini_key)
