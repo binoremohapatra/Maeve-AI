@@ -12,3 +12,6 @@ python-dotenv
 edge-tts
 Pillow
 groq
+ddgs
+nest_asyncio
+numpy

@@ -12,7 +12,10 @@ import logging
 import base64
 import asyncio
 import threading
-import torch
+try:
+    import torch
+except ImportError:
+    torch = None
 import numpy as np
 import soundfile as sf
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
@@ -47,7 +50,7 @@ class MaeveVoiceEngine:
         self.model_lock = threading.Lock()
         
         # VRAM management
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.device = "cuda" if (torch is not None and torch.cuda.is_available()) else "cpu"
         self.vram_threshold = 1.5  # GB - keep this much VRAM free
         
         # Fallback TTS (using existing system)
@@ -65,7 +68,7 @@ class MaeveVoiceEngine:
             return True
             
         try:
-            if not torch.cuda.is_available():
+            if torch is None or not torch.cuda.is_available():
                 return False
                 
             # Get VRAM info
@@ -123,7 +126,7 @@ class MaeveVoiceEngine:
                         self.index_model.to('cpu')
                     
                     # Clear CUDA cache
-                    if self.device == "cuda":
+                    if self.device == "cuda" and torch is not None:
                         torch.cuda.empty_cache()
                     
                     self.model_loaded = False
@@ -316,17 +319,23 @@ class MaeveVoiceEngine:
     def _generate_with_index_model(self, text: str, voice_params: Dict[str, float]) -> Optional[Tuple[np.ndarray, int]]:
         """Generate audio using Index-based model"""
         try:
-            with torch.no_grad():
-                # Generate audio using your Index model
-                # Replace this with your actual inference code
+            if torch is not None:
+                with torch.no_grad():
+                    audio_array, sample_rate = self.index_model.generate(
+                        text=text,
+                        speed=voice_params["speed"],
+                        pitch=voice_params["pitch"],
+                        tone=voice_params["tone"]
+                    )
+            else:
                 audio_array, sample_rate = self.index_model.generate(
-                    text=text,
-                    speed=voice_params["speed"],
-                    pitch=voice_params["pitch"],
-                    tone=voice_params["tone"]
+                        text=text,
+                        speed=voice_params["speed"],
+                        pitch=voice_params["pitch"],
+                        tone=voice_params["tone"]
                 )
                 
-                return audio_array, sample_rate
+            return audio_array, sample_rate
                 
         except Exception as e:
             logger.error(f"Index model generation failed: {e}")
@@ -490,7 +499,7 @@ class MaeveVoiceEngine:
     
     def _cleanup_vram(self):
         """Periodic VRAM cleanup"""
-        if self.device == "cuda":
+        if self.device == "cuda" and torch is not None:
             try:
                 torch.cuda.empty_cache()
                 logger.debug("🧹 VRAM cache cleared")
