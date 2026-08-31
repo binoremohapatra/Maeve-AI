@@ -51,7 +51,13 @@ export const MascotDeviceScreen: React.FC<Props> = ({ onBack }) => {
           }));
           setIsOnline(true);
         }
-      } catch (e) { setIsOnline(false); }
+      } catch (e) { 
+        setIsOnline(false); 
+        if (!window.sessionStorage.getItem('device_offline_alerted')) {
+          alert("Coming soon: Device Status tracking is temporarily disabled in the cloud version.");
+          window.sessionStorage.setItem('device_offline_alerted', 'true');
+        }
+      }
     };
     fetchStats();
     const interval = setInterval(fetchStats, 2000);

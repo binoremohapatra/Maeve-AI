@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 Debug Settings Sync
@@ -7,7 +8,7 @@ import requests
 def debug_settings():
     """Debug settings sync"""
     
-    base_url = "http://127.0.0.1:5000"
+    base_url = os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + ""
     user_id = "debug_user"
     
     print("Debug Settings Sync")

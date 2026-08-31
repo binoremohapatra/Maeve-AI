@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 import base64
@@ -120,7 +121,7 @@ async def trigger_proactive_greeting(event_type):
     """Notify main backend to speak proactively"""
     try:
         import requests
-        requests.post("http://localhost:5000/api/proactive/vision", 
+        requests.post(os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + "/api/proactive/vision", 
                       json={"event": event_type, "userId": "user_pro_01"})
     except Exception as e:
         logger.error(f"Failed to trigger proactive greeting: {e}")

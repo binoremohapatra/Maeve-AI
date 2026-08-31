@@ -1,7 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 
 let socket: Socket | null = null;
-const WS_URL = import.meta.env.VITE_TTS_SERVER_URL || 'http://127.0.0.1:5000'; // Target backend
+const WS_URL = import.meta.env.VITE_BRAIN_SERVER_URL || import.meta.env.VITE_TTS_SERVER_URL || 'http://127.0.0.1:5000'; // Target backend
 
 self.onmessage = (e: MessageEvent) => {
     const { type, payload } = e.data;

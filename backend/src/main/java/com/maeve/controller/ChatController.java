@@ -38,7 +38,7 @@ public class ChatController {
 
             // POST to Python
             Map<String, Object> pythonResponse = restTemplate.postForObject(
-                "http://127.0.0.1:5000/process", 
+                (System.getenv("BRAIN_SERVICE_URL") != null ? System.getenv("BRAIN_SERVICE_URL") : "http://127.0.0.1:5000") + "/process", 
                 pythonPayload, 
                 Map.class
             );

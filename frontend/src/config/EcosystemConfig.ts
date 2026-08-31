@@ -13,31 +13,34 @@ export const getBaseUrl = (port: number, protocol = 'http') => {
     return `${protocol}://${window.location.hostname}:${port}`;
   }
 
-  //  PHONE / CLOUD ROUTING (Tunnels)
-  // Apne Cloudflare links yahan update karta rehna jab phone pe chalana ho
+  //  PRODUCTION CLOUD FALLBACKS
+  // Used if Vercel env vars are missing
   const cloudLinks: Record<number, string> = {
-    5000: "https://deviant-park-emacs-bars.trycloudflare.com",      // Brain
-    5002: "wss://deviant-park-emacs-bars.trycloudflare.com",  // Ears
-    5006: "wss://luther-live-addresses-joining.trycloudflare.com", // Vision
-    8080: "https://deviant-park-emacs-bars.trycloudflare.com"        // Java Core
+    5000: "https://maeve-brain.onrender.com",      // Brain
+    5003: "https://maeve-vision.onrender.com",       // Vision
+    8080: "https://maeve-core.onrender.com"        // Java Core (Placeholder)
   };
 
   return cloudLinks[port] || `${protocol}://${window.location.hostname}:${port}`;
 };
 
+// Helper to safely convert any http/https URL to ws/wss
+const toWsProtocol = (url: string) => {
+    return url.replace(/^http:\/\//i, 'ws://').replace(/^https:\/\//i, 'wss://');
+};
+
 //  GLOBAL API ENDPOINTS (Exported for everywhere)
 export const API_ENDPOINTS = {
-    BRAIN: import.meta.env.VITE_TTS_SERVER_URL || getBaseUrl(5000),
-    BRAIN_WS: (import.meta.env.VITE_TTS_SERVER_URL || getBaseUrl(5000)).replace(/^http/, 'ws'),
-    VISION_WS: `${import.meta.env.VITE_VISION_SERVER_URL || getBaseUrl(5006, 'ws')}/ws/vision`,
-    JAVA_CORE: import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || getBaseUrl(8080),
-    TTS: import.meta.env.VITE_TTS_SERVER_URL || getBaseUrl(5003)
+    BRAIN: import.meta.env.VITE_BRAIN_SERVER_URL || import.meta.env.VITE_TTS_SERVER_URL || getBaseUrl(5000),
+    BRAIN_WS: toWsProtocol(import.meta.env.VITE_BRAIN_SERVER_URL || import.meta.env.VITE_TTS_SERVER_URL || getBaseUrl(5000)),
+    VISION_WS: `${toWsProtocol(import.meta.env.VITE_VISION_SERVER_URL || getBaseUrl(5003))}/ws/vision`,
+    JAVA_CORE: import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || getBaseUrl(8080)
 };
 
 //  CROSS-ACTION SYSTEM
 export const CROSS_ACTION_CONFIG = {
-  javaBackend: getBaseUrl(8080),
-  brainEndpoint: `${getBaseUrl(5000)}/api/cross-action`,
+  javaBackend: API_ENDPOINTS.JAVA_CORE,
+  brainEndpoint: `${API_ENDPOINTS.BRAIN}/api/cross-action`,
   supportedCommands: [
     'stop_spotify',
     'start_spotify', 

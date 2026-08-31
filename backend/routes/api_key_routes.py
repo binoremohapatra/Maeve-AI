@@ -51,8 +51,8 @@ def set_keys():
     if SESSION_API_KEYS["gemini"]:
         try:
             import requests
-            requests.post("http://127.0.0.1:5003/update_key", json={"gemini_key": SESSION_API_KEYS["gemini"]}, timeout=2)
-            requests.post("http://127.0.0.1:5005/update_key", json={"gemini_key": SESSION_API_KEYS["gemini"]}, timeout=2)
+            requests.post(os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/update_key", json={"gemini_key": SESSION_API_KEYS["gemini"]}, timeout=2)
+            requests.post(os.getenv("SUPERVISOR_SERVICE_URL", "http://127.0.0.1:5005") + "/update_key", json={"gemini_key": SESSION_API_KEYS["gemini"]}, timeout=2)
         except:
             pass
 

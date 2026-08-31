@@ -43,6 +43,7 @@ export const SpotifyCallback: React.FC = () => {
           }
         } catch (error) {
           console.error(' Error exchanging code for token:', error);
+          alert("Coming soon: Spotify integration is temporarily disabled in the cloud version.");
           setTimeout(() => {
             window.location.href = '/';
           }, 3000);

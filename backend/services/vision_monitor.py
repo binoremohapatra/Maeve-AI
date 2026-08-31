@@ -1,3 +1,4 @@
+import os
 import time
 import requests
 import cv2
@@ -14,8 +15,8 @@ from datetime import datetime
 # --- CONFIG ---
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-VISION_URL    = "http://127.0.0.1:5003/analyze"
-PROACTIVE_URL = "http://127.0.0.1:5000/api/proactive/visual_event"
+VISION_URL    = os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/analyze"
+PROACTIVE_URL = os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + "/api/proactive/visual_event"
 CHECK_INTERVAL = 90
 LAST_WINDOW_TITLE = ""
 LAST_PROFILE      = ""
@@ -106,7 +107,7 @@ def run_loop():
         while True:
             # ─── Check camera state via API (No Imports!) ─────────────────────
             try:
-                res = requests.get("http://127.0.0.1:5000/api/vision/camera", timeout=2)
+                res = requests.get(os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + "/api/vision/camera", timeout=2)
                 CAMERA_ACTIVE = res.json().get("camera_active", False)
             except:
                 CAMERA_ACTIVE = False # Agar brain offline hai toh camera OFF rakho

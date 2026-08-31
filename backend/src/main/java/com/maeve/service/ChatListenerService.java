@@ -18,7 +18,7 @@ public class ChatListenerService {
     private FirebaseDatabase firebaseDatabase;
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String PYTHON_BRAIN_URL = "http://127.0.0.1:5000/process"; // 🔥 Python Logic
+    private final String PYTHON_BRAIN_URL = (System.getenv("BRAIN_SERVICE_URL") != null ? System.getenv("BRAIN_SERVICE_URL") : "http://127.0.0.1:5000") + "/process"; // 🔥 Python Logic
     private final String USER_ID = "user_pro_01";
 
     @PostConstruct

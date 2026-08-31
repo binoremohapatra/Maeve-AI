@@ -91,7 +91,7 @@ def detect_vision_query(user_input: str) -> str:
     
     if any(w in user_input.lower() for w in VISION_QUERY_WORDS):
         try:
-            resp = requests.post("http://127.0.0.1:5005/vision/instant", 
+            resp = requests.post(os.getenv("SUPERVISOR_SERVICE_URL", "http://127.0.0.1:5005") + "/vision/instant", 
                                 json={"query": user_input}, 
                                 timeout=10)
             if resp.status_code == 200:
@@ -460,7 +460,7 @@ def handle_chat():
     
     # Check for stored vision context from vision server (port 5003)
     try:
-        vision_server_url = "http://127.0.0.1:5003/chat_context/" + user_id
+        vision_server_url = os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/chat_context/" + user_id
         response = requests.get(vision_server_url, timeout=3)
         
         if response.status_code == 200:
@@ -503,7 +503,7 @@ def handle_chat():
     elif user_asked_vision:
         # User asked but no visual vibe - get latest from AGI
         try:
-            agi_response = requests.get("http://localhost:5005/vision/state", timeout=5)
+            agi_response = requests.get(os.getenv("SUPERVISOR_SERVICE_URL", "http://127.0.0.1:5005") + "/vision/state", timeout=5)
             if agi_response.status_code == 200:
                 agi_state = agi_response.json()
                 activity = agi_state.get('activity', 'unknown')
@@ -778,7 +778,7 @@ YOU MUST READ THE ACTUAL LIVE DATA AND SHARE REAL FACTS.
             if tool_call == "ANALYZE_SCREEN":
                 try:
                     vision_response = requests.post(
-                        "http://127.0.0.1:5005/vision/instant",
+                        os.getenv("SUPERVISOR_SERVICE_URL", "http://127.0.0.1:5005") + "/vision/instant",
                         json={"analyze": True}, timeout=10
                     )
                     if vision_response.status_code == 200:

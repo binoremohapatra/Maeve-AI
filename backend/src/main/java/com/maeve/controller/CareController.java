@@ -11,7 +11,7 @@ import java.util.Map;
 public class CareController {
 
     // Python Server URL
-    private final String PYTHON_API_URL = "http://localhost:5000/process";
+    private final String PYTHON_API_URL = (System.getenv("BRAIN_SERVICE_URL") != null ? System.getenv("BRAIN_SERVICE_URL") : "http://127.0.0.1:5000") + "/process";
 
     @PostMapping("/{userId}/interact")
     public ResponseEntity<Map<String, Object>> handleInteraction(

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 Debug Vision Server
@@ -13,7 +14,7 @@ def debug_vision_server():
     print("=" * 50)
     print("This will show exactly what vision server does")
     
-    vision_url = "http://localhost:5003"
+    vision_url = os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + ""
     
     print("\nTESTING VISION SERVER WITH YOUR PHOTO...")
     

@@ -270,7 +270,7 @@ public class CommandListenerService {
     private void maeveSpeak(String text, String style) {
         try {
             // Python server expects POST on /generate
-            java.net.URL url = new java.net.URL("http://127.0.0.1:5003/generate");
+            java.net.URL url = new java.net.URL((System.getenv("VISION_SERVICE_URL") != null ? System.getenv("VISION_SERVICE_URL") : "http://127.0.0.1:5003") + "/generate");
             java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
             
             conn.setRequestMethod("POST"); 

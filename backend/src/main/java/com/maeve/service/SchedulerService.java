@@ -24,7 +24,7 @@ public class SchedulerService {
     @Autowired
     private RestTemplate restTemplate;
     
-    private final String PYTHON_BRAIN_URL = "http://localhost:5000/api/schedule/generate";
+    private final String PYTHON_BRAIN_URL = (System.getenv("BRAIN_SERVICE_URL") != null ? System.getenv("BRAIN_SERVICE_URL") : "http://127.0.0.1:5000") + "/api/schedule/generate";
 
     public Map<String, Object> generateSchedule(List<Task> pendingTasks, UserState state) {
         log.info("Calling AI Brain for strategic planning. User Stress Level: {}", state.getStressLevel());

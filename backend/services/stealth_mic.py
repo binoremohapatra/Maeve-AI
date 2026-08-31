@@ -1,3 +1,4 @@
+import os
 """
 MAEVE HYBRID MIC ENGINE v2.3
 ============================
@@ -66,7 +67,7 @@ app = Flask(__name__)
 CORS(app)
 
 # ── Config ────────────────────────────────────────────────────────────────────
-BRAIN_URL      = "http://127.0.0.1:5000/process"
+BRAIN_URL      = os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + "/process"
 COOLDOWN_SECS  = 4       # seconds to ignore audio after a command (stops TTS echo)
 VOICE_USER_ID  = "user_pro_01"   # must match a real profile in your profiles JSON
 

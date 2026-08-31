@@ -175,15 +175,15 @@ def call_huggingface_space(user_msg: str, system_prompt: str, hf_space_url: str)
     if not hf_space_url:
         raise Exception("HF_SPACE_URL missing! Skipping HF Space fallback.")
         
+    import concurrent.futures
     try:
         from gradio_client import Client
-        import concurrent.futures
         
         # Load client - this makes an initial HTTP request to fetch API info
         client = Client(hf_space_url)
         
         # Concatenate system prompt and user message with an explicit JSON enforcer
-        json_enforcer = "\n\nCRITICAL INSTRUCTION: You MUST respond ONLY with a raw JSON object. Do not wrap in markdown blocks, do not add introductory text. ONLY output the JSON."
+        json_enforcer = "\n\nCRITICAL INSTRUCTION: You MUST respond ONLY with a raw JSON object using the exact keys: 'reply', 'base_emotion', and 'animation'. Do not wrap in markdown blocks, do not add introductory text. ONLY output the JSON."
         big_prompt = f"{system_prompt}{json_enforcer}\n\nUser: {user_msg}\nMaeve:"
         
         def run_predict():
@@ -193,6 +193,19 @@ def call_huggingface_space(user_msg: str, system_prompt: str, hf_space_url: str)
             future = executor.submit(run_predict)
             # Timeout set to 20 seconds as requested (to account for ZeroGPU cold start)
             res = future.result(timeout=20.0)
+            
+        # The Space might still return {response, emotion} based on its training,
+        # so we remap the keys to match the pipeline's expectations.
+        try:
+            import json
+            data = json.loads(res)
+            if "response" in data and "reply" not in data:
+                data["reply"] = data.pop("response")
+            if "emotion" in data and "base_emotion" not in data:
+                data["base_emotion"] = data.pop("emotion")
+            res = json.dumps(data)
+        except Exception as remap_e:
+            logger.warning(f"HF Space key remap failed, passing raw response through: {remap_e}")
             
         return res
         
@@ -2009,15 +2022,15 @@ def ask_ollama_chat(
 
                 try:
                     #  TRY 4: GEMINI CLOUD (reliable backup)
-                # Full system prompt passed identically — same architecture, different engine
-                logger.info(" Fetching response from Gemini Cloud...")
-                raw_response = call_cloud_gemini(user_input, full_system_prompt, gemini_key)
-                engine_used  = "GEMINI"
-                logger.info(" Gemini Fallback Success!")
+                    # Full system prompt passed identically — same architecture, different engine
+                    logger.info(" Fetching response from Gemini Cloud...")
+                    raw_response = call_cloud_gemini(user_input, full_system_prompt, gemini_key)
+                    engine_used  = "GEMINI"
+                    logger.info(" Gemini Fallback Success!")
 
-            except Exception as gemini_e:
-                # ALL ENGINES FAILED
-                logger.error(f" ALL ENGINES FAILED: {gemini_e}")
+                except Exception as gemini_e:
+                    # ALL ENGINES FAILED
+                    logger.error(f" ALL ENGINES FAILED: {gemini_e}")
                 raw_response = "{}"
 
     # Ensure response starts with a brace (cloud APIs occasionally omit it)

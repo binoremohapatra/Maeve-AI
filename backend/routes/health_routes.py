@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from flask import Blueprint, jsonify
 
@@ -31,10 +32,10 @@ def detailed_health():
     
     # Check each service
     service_urls = {
-        "main_app": "http://localhost:5000/ping",
-        "stt_service": "http://localhost:5002/status",
+        "main_app": os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + "/ping",
+        "stt_service": os.getenv("STT_SERVICE_URL", "http://127.0.0.1:5002") + "/status",
         "pc_agent": "http://localhost:5001/status",
-        "vision_service": "http://localhost:5003/status"
+        "vision_service": os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/status"
     }
     
     for service_name, url in service_urls.items():

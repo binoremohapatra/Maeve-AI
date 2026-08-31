@@ -9,7 +9,7 @@ import java.util.Map;
 public class VoiceService {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String TTS_SERVER_URL = "http://localhost:5000/generate";
+    private final String TTS_SERVER_URL = (System.getenv("BRAIN_SERVICE_URL") != null ? System.getenv("BRAIN_SERVICE_URL") : "http://127.0.0.1:5000") + "/generate";
 
     /**
      * Overloaded method for backward compatibility
@@ -30,7 +30,7 @@ public class VoiceService {
             if (cleanText.isEmpty()) return null;
 
             // Kokoro server (Python) ka URL
-            String url = "http://localhost:5000/generate";
+            String url = (System.getenv("BRAIN_SERVICE_URL") != null ? System.getenv("BRAIN_SERVICE_URL") : "http://127.0.0.1:5000") + "/generate";
 
             // JSON Payload: text aur mood dono bhej rahe hain
             Map<String, String> requestBody = Map.of(

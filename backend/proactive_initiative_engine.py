@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 Proactive Initiative Engine
@@ -46,7 +47,7 @@ class ProactiveInitiativeEngine:
         """Trigger a proactive conversation via backend API"""
         try:
             # Use the existing proactive endpoint
-            url = "http://127.0.0.1:5000/api/proactive/idle_check"
+            url = os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + "/api/proactive/idle_check"
             
             payload = {
                 "trigger_type": "idle_timeout",

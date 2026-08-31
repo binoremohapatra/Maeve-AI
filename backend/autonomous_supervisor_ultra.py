@@ -1,3 +1,4 @@
+import os
 import time
 import requests
 import cv2
@@ -13,8 +14,8 @@ from datetime import datetime
 # --- CONFIG ---
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-VISION_URL = "http://127.0.0.1:5003/analyze"
-PROACTIVE_URL = "http://127.0.0.1:5000/api/proactive/visual_event"
+VISION_URL = os.getenv("VISION_SERVICE_URL", "http://127.0.0.1:5003") + "/analyze"
+PROACTIVE_URL = os.getenv("BRAIN_SERVICE_URL", "http://127.0.0.1:5000") + "/api/proactive/visual_event"
 CHECK_INTERVAL = 90 # हर 90 सेकंड में एक कमेंट 
 LAST_WINDOW_TITLE = ""
 LAST_PROFILE = ""

@@ -15,7 +15,7 @@ public class SettingsController {
     @Autowired
     private FirebaseSyncService firebaseSync;
 
-    private final String PYTHON_BRAIN_URL = "http://localhost:5000/api/settings/sync";
+    private final String PYTHON_BRAIN_URL = (System.getenv("BRAIN_SERVICE_URL") != null ? System.getenv("BRAIN_SERVICE_URL") : "http://127.0.0.1:5000") + "/api/settings/sync";
 
     @PostMapping("/{userId}/update")
     public ResponseEntity<?> updateSettings(@PathVariable String userId, @RequestBody Map<String, Object> settings) {
